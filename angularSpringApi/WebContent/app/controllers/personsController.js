@@ -3,11 +3,6 @@
 /**
  * @author ArslanAnjum
  */
-'use strict';
-
-/**
- * @author ArslanAnjum
- */
 app.controller('personsController',
 		['$scope','apiForm','apiDataTable',
 			function($scope,apiForm,apiDataTable){
