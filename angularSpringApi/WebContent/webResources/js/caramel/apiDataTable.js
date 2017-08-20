@@ -28,21 +28,21 @@
 		var inputs;
 		var searchTerms;
 		
-		var apiDataTable = function($scope,name,entity,metadata){
+		var apiDataTable = function($scope,entity,metadata){
 			this.$scope = $scope;
-			this.name = name;
+			this.name = entity + 'DataTable';
 			this.entity = entity;
 			this.metadata = metadata;
-			this.headings = name + "Headings";
-			this.parentDiv = name + "Div";
-			this.tds = name + "Tds";
-			this.paginator = name + "Paginator";
-			this.editDiv = name + "EditDiv";
-			this.editModal = name + "EditModal";
-			this.editModalBody = name + "EditModalBody";
-			this.editEntity = name + "EditEntity";
+			this.headings = this.name + "Headings";
+			this.parentDiv = this.name + "Div";
+			this.tds = this.name + "Tds";
+			this.paginator = this.name + "Paginator";
+			this.editDiv = this.name + "EditDiv";
+			this.editModal = this.name + "EditModal";
+			this.editModalBody = this.name + "EditModalBody";
+			this.editEntity = this.name + "EditEntity";
 			this.inputs = this.editEntity + "Inputs";
-			this.editEntityCopy = name + "EditEntityCopy";
+			this.editEntityCopy = this.name + "EditEntityCopy";
 			this.form = this.editModal + "Form";
 			this.searchTerms = this.name + "SearchTerms";
 			this.editModalBuilt = false;

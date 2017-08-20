@@ -28,9 +28,9 @@
 		var metadata;
 		var onCreate;
 		
-		var apiForm = function($scope,name,entity,metadata,onCreate){
+		var apiForm = function($scope,entity,metadata,onCreate){
 			this.$scope = $scope;
-			this.name = name;
+			this.name = entity+'Create';
 			this.entity = entity;
 			this.apiWrapper = new apiWrapper($scope);
 			this.parentDiv = this.name + "Div";

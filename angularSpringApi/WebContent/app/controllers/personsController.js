@@ -15,8 +15,7 @@ app.controller('personsController',
 				
 				$scope[entity+'DataTable'] = new apiDataTable(
 						$scope,
-						entity+'DataTable',
-						"persons",
+						entity,
 						{
 							name 		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
 							address		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
@@ -30,8 +29,7 @@ app.controller('personsController',
 				
 				$scope[entity+'Create'] = new apiForm(
 						$scope,
-						entity+'Create',
-						"persons",
+						entity,
 						{
 							name 		:{iType:'input',required:true},
 							address		:{iType:'input',required:true},
