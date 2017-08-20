@@ -13,7 +13,10 @@ app.controller('personsController',
 				$scope.csrfHeaderName = csrfHeaderName;
 				$scope.server = server;
 				
-				$scope[entity+'DataTable'] = new apiDataTable(
+				var dataTable = entity + 'DataTable';
+				var createForm = entity + 'Create';
+				
+				$scope[dataTable] = new apiDataTable(
 						$scope,
 						entity,
 						{
@@ -27,7 +30,7 @@ app.controller('personsController',
 						}
 				);
 				
-				$scope[entity+'Create'] = new apiForm(
+				$scope[createForm] = new apiForm(
 						$scope,
 						entity,
 						{
@@ -40,7 +43,7 @@ app.controller('personsController',
 							badges		:{iType:'multiselect-dropdown',fetch:'badges'}
 						},
 						function(){
-							$scope[entity+'DataTable'].update();
+							$scope[dataTable].update();
 						}
 				);
 			}

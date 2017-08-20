@@ -268,6 +268,7 @@
 			
 			var that = this;
 			if (!this.$scope[this.newObj][prop][searchable]){
+				
 				for (var i=0;i<that.$scope[that.inputs].length;i++){
 					if (that.$scope[that.inputs][i].id == prop){
 						that.$scope[that.inputs][i].showSearchedData = false;
@@ -433,6 +434,8 @@
 					function(response){
 						that.toast("Created");
 						that.$scope[that.newObj] = null;
+						for (var prop in that.$scope[that.newObj])
+							that.$scope[that.newObj][prop] = null;
 						that.onCreate();
 					},
 					function(error){
@@ -441,7 +444,8 @@
 		};
 		apiForm.prototype.resetForm = function(){
 			this.$scope[this.form].$setPristine();
-			this.$scope[this.newObj] = null;
+			for (var prop in this.$scope[this.newObj])
+				this.$scope[this.newObj][prop] = null;
 		}
 		return apiForm;
 	}]);

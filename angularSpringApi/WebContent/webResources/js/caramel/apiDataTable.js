@@ -933,7 +933,6 @@
 					that.$scope,
 					function(response){
 						that.toast("Updated");
-						that.$scope[that.newObj] = null;
 						$('#' + that.editModal).modal('close');
 						that.apiWrapper.fetchSortedPage(that.entity);
 					},
