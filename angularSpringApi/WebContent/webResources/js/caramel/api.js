@@ -4,8 +4,6 @@
 	/**
 	 * Assumptions: 1-spring api is configured at server-root/api/**
 	 * 
-	 * TODOS: put both callbacks in all functions
-	 * 	onSuccess, onError
 	 */
 	var apiModule = angular.module('api',[]);
 	
