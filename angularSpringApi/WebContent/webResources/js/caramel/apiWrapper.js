@@ -488,7 +488,7 @@
 		
 		
 		
-		apiWrapper.prototype.delete = function(object,entityName,entityIdName,entityId){
+		apiWrapper.prototype.delete = function(object,onSuccess,onError){
 			
 			var that = this;
 			
@@ -498,19 +498,17 @@
 			}
 			
 			
-			api.delete(object,that.$scope,function(response){
-				if (response.status >= 200 && response.status < 300){
-					for (var i=0;i<that.$scope[entityName].length;i++){
-						if (that.$scope[entityName][i][entityIdName] == entityId){
-							that.$scope[entityName].splice(i,1);
-							that.toast("Deleted");
-							that.fetchSortedPage(entityName);
-							break;
-						}
+			api.delete(
+					object,
+					that.$scope,
+					function(){
+						that.toast('Deleted');
+						onSuccess();
+					},
+					function(){
+						that.toast('Cannot Delete');
 					}
-					
-				}
-			})
+				)
 		}
 		
 		apiWrapper.prototype.update = function(entityName,entity,$scope,callBack,errorCallBack){

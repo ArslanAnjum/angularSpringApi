@@ -21,8 +21,11 @@
 		var editModal;
 		var editModalBody;
 		var editEntity;
+		var deleteEntity;
 		var editEntityCopy;
 		var eidtModalBuilt;
+		var deleteConfirmationDiv;
+		var deleteConfirmationModal;
 		var form;
 		var rows;
 		var inputs;
@@ -41,10 +44,13 @@
 			this.editModal = this.name + "EditModal";
 			this.editModalBody = this.name + "EditModalBody";
 			this.editEntity = this.name + "EditEntity";
+			this.deleteEntity = this.name + "DeleteEntity";
 			this.inputs = this.editEntity + "Inputs";
 			this.editEntityCopy = this.name + "EditEntityCopy";
 			this.form = this.editModal + "Form";
 			this.searchTerms = this.name + "SearchTerms";
+			this.deleteConfirmationDiv = entity + 'DeleteConfirmationDiv';
+			this.deleteConfirmationModal = entity + 'DeleteConfirmationModal';
 			this.editModalBuilt = false;
 			this.singularEntity = this.getSingular(entity);
 			this.apiWrapper = new apiWrapper($scope);
@@ -56,6 +62,7 @@
 			this.buildDataTable();
 			this.buildPaginator();
 			this.buildEditModal();
+			this.buildDeleteConfirmationModal();
 		};
 		
 		apiDataTable.prototype.buildDataTable = function(){
@@ -303,6 +310,10 @@
 							"<a class=\"waves-effect waves-light btn blue\"\n"+
 							"	ng-click=\""+that.name+".openEditModal("+that.singularEntity+")\">\n"+
 							"	<i class=\"material-icons\">edit</i>\n"+
+							"</a>\n"+
+							"<a class=\"waves-effect waves-light btn blue\"\n"+
+							"	ng-click=\""+that.name+".openDeleteConfirmationModal("+that.singularEntity+")\">\n"+
+							"	<i class=\"material-icons\">delete</i>\n"+
 							"</a>\n";
 						
 						that.$scope[that.headings].unshift({name:"Id"});
@@ -417,7 +428,7 @@
 			}
 			
 			this.$scope[this.editEntityCopy] = angular.copy(this.$scope[this.editEntity]);
-			$('#' + this.editModal).modal('open');
+			$('#'+this.editModal).modal('open');
 			$timeout(function(){
 				$('select').material_select();
 			},200);
@@ -453,6 +464,58 @@
 			
 			this.$scope[this.paginator] = content;
 		}
+		
+		apiDataTable.prototype.openDeleteConfirmationModal = function(entity){
+			var that = this;
+			this.$scope[this.deleteEntity] = angular.copy(entity);
+			$('#'+this.deleteConfirmationModal).modal('open');
+		};
+		
+		apiDataTable.prototype.buildDeleteConfirmationModal = function(){
+			
+			var that = this;
+			var content =
+				"<div id=\""+this.deleteConfirmationModal+"\" class=\"modal\" style='margin-top:15%' >\n"+
+				"	<div class=\"modal-content\" style=\"overflow:visible;\">\n"+
+				"		<div class=\"window-table-div-border\">\n"+
+				"			<h1>\n"+
+				"				<span>Are you sure you want to delete this "+this.getLabel(this.singularEntity)+"</span>\n"+
+				"			</h1>\n"+
+				"			<div class='row'>\n" +
+				"				<div class='col s12 m12 l6 right-align'>\n" +
+				"					<a ng-click=\""+this.name+".deleteSelectedEntity()\" class='waves-effect waves-light btn'>Yes</a>\n" +
+				"				</div>\n" +
+				"				<div class='col s12 m12 l6 left-align'>\n" +
+				"					<a class='waves-effect waves-light btn modal-close'>No</a>\n" +
+				"				</div>\n" +
+				"			</div>\n"+
+				"			\n"+
+				"		</div>\n"+
+				"	</div>\n"+
+				"</div>\n";
+			
+			this.$scope[this.deleteConfirmationDiv] = content;
+			$timeout(function(){
+				$('#'+that.deleteConfirmationModal).modal({
+					dismissible : true,
+					opacity : .5,
+					in_duration : 300,
+					out_duration : 200
+				});
+			},200);
+		}
+		
+		apiDataTable.prototype.deleteSelectedEntity = function(){
+			var that = this;
+			if (this.$scope[this.deleteEntity]){
+				this.apiWrapper.delete(
+						this.$scope[this.deleteEntity],
+						function(){
+							that.update();
+							$('#'+that.deleteConfirmationModal).modal('close');
+						});
+			}
+		};
 		
 		apiDataTable.prototype.buildEditModal = function(){
 			

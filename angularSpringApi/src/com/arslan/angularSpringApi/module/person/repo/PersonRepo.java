@@ -13,7 +13,7 @@ import com.arslan.angularSpringApi.module.person.model.Person;
 @Transactional("jpaTXManager")
 public interface PersonRepo extends PagingAndSortingRepository<Person, Integer>{
 
-	
+
 	@Query(
 			"select distinct p from Person p join p.badges badges "
 			+ "where"

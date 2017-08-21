@@ -19,6 +19,7 @@
 			<div bind-html-compile="${param.entity}CreateDiv"></div>
 			<div bind-html-compile="${param.entity}DataTableDiv"></div>
 			<div bind-html-compile="${param.entity}DataTableEditDiv"></div>
+			<div bind-html-compile="${param.entity}DeleteConfirmationDiv"></div>
 			<div bind-html-compile="${param.entity}DataTablePaginator"></div>
 		</div>
 	</div>
