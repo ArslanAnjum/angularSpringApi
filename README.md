@@ -16,7 +16,7 @@ Its an AngularJS library to be used with Spring REST API. This repository contai
 
 5- Run the scripts present in /sqlScripts/
 
-6- Open browser and type localhost:8080/angularSpringApi/
+6- Open browser and type localhost:8080/angularSpringApi/ with default username : admin and password 123
 
 ### To Use library
 
