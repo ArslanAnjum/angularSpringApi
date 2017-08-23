@@ -31,7 +31,7 @@ Its an AngularJS library to be used with Spring REST API. This repository contai
 4- Angular Dependencies:
 
     a) angular-bind-html-compile (https://github.com/incuna/angular-bind-html-compile)
-    b) api, apiWrapper, apiForm and apiDataTable (Present in /WebContent/webResources/js/caramel/)
+    b) api, apiWrapper, apiForm, apiDataTable and apiControllerTemplate (Present in /WebContent/webResources/js/caramel/)
 
 With above mentioned prerequisites you can start building CRUD for any entity.
 
@@ -60,65 +60,53 @@ Sample Crud Page which uses skeleton.jsp as a template:
  Respective controller i.e., personsController must have following structure:
 
     app.controller('personsController',
-        ['$scope','apiForm','apiDataTable',
-          function($scope,apiForm,apiDataTable){
+        ['$scope','apiControllerTemplate,
+          function($scope,apiForm,apiControllerTemplate){
 
           $scope.init = function(csrfParamName, csrfToken, csrfHeaderName,server,entity){
-            $scope.csrfParamName = csrfParamName;
-            $scope.csrfToken = csrfToken;
-            $scope.csrfHeaderName = csrfHeaderName;
-            $scope.server = server;
-            var dataTable = entity + 'DataTable';
-            var createForm = entity + 'Create';
-
-
             var dataTableMetadata = 
-              {
-                name 		    :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-                address		  :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-                emailId 	  :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-                phoneNumber :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-                city		    :{iType:'searchable-dropdown',fetch:'cities',required:true,editable:true,searchable:true,inGridVisible:true},
-                industry	  :{iType:'searchable-dropdown',fetch:'industries',required:true,editable:true,searchable:true,inGridVisible:true},
-                badges		  :{iType:'multiselect-dropdown',fetch:'badges',editable:true,searchable:true,inGridVisible:true}
-              };
-
-            var createFormMetadata = 
-              {
-                name 		    :{iType:'input',required:true},
-                address		  :{iType:'input',required:true},
-                emailId 	  :{iType:'input',type:'email',required:true},
-                phoneNumber :{iType:'input',required:true},
-                city		    :{iType:'searchable-dropdown',fetch:'cities',required:true},
-                industry	  :{iType:'searchable-dropdown',fetch:'industries',required:true},
-                badges		  :{iType:'multiselect-dropdown',fetch:'badges'}
-              };
-
-
-
-            $scope[dataTable] = new apiDataTable(
-                $scope,
-                entity,
-                dataTableMetadata
-            );
-            $scope[createForm] = new apiForm(
-                $scope,
-                entity,
-                createFormMetadata,
-                function(){
-                  $scope[dataTable].update();
-                }
-            );
+				{
+					name 		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					address		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					emailId 	:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					phoneNumber :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					city		:{iType:'searchable-dropdown',fetch:'cities',required:true,editable:true,searchable:true,inGridVisible:true},
+					industry	:{iType:'searchable-dropdown',fetch:'industries',required:true,editable:true,searchable:true,inGridVisible:true},
+					badges		:{iType:'multiselect-dropdown',fetch:'badges',editable:true,searchable:true,inGridVisible:true}
+				};
+			
+				var createFormMetadata = 
+					{
+						name 		:{iType:'input',required:true},
+						address		:{iType:'input',required:true},
+						emailId 	:{iType:'input',type:'email',required:true},
+						phoneNumber :{iType:'input',required:true},
+						city		:{iType:'searchable-dropdown',fetch:'cities',required:true},
+						industry	:{iType:'searchable-dropdown',fetch:'industries',required:true},
+						badges		:{iType:'multiselect-dropdown',fetch:'badges'}
+					};
+				
+				apiControllerTemplate
+				.buildControllerTemplate(
+						csrfParamName,
+						csrfToken,
+						csrfHeaderName,
+						server,
+						entity,
+						$scope,
+						dataTableMetadata,
+						createFormMetadata
+				);
           }
         }]);
 
-When the controller loads, it would come in init function and here we would apiForm and apiDataTable.
+When the controller loads, it would come in init function
 
 dataTableMetadata and createFormMetadata variables are used to configure how the front end would look like.
 Only those variable names need to be included in these metadatas which we want to render on front end.
 Generic Structure and options are as follows:
 
-##### apiDataTable
+##### dataTableMetadata
 
     {
       [variable name in json] : {
@@ -132,7 +120,7 @@ Generic Structure and options are as follows:
       }
     }
 
-##### apiForm
+##### createFormMetadata
 
     {
       [variable name in json] : {
