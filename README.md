@@ -100,7 +100,11 @@ Sample Crud Page which uses skeleton.jsp as a template:
           }
         }]);
 
-When the controller loads, it would come in init function
+When the controller loads, it would come in init function. We have to do the following steps and our controller would be ready for deployment
+
+	1- Formulate data table meta data
+	2- Formulat creation form meta data
+	3- Call apiControllerTemplate.buildControllerTemplate with respective variables
 
 dataTableMetadata and createFormMetadata variables are used to configure how the front end would look like.
 Only those variable names need to be included in these metadatas which we want to render on front end.
