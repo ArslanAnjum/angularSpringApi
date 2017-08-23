@@ -1,5 +1,7 @@
 package com.arslan.angularSpringApi.module.person.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -12,4 +14,5 @@ public class PersonController extends BaseController{
 	public String getPersonPage(){
 		return "persons";
 	}
+	
 }
