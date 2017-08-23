@@ -10,6 +10,7 @@ var app =
 				"apiWrapper",
 				"apiForm",
 				"apiDataTable",
+				"apiControllerTemplate",
 				'chieffancypants.loadingBar',
 				'ngAnimate'
 			]);

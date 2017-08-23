@@ -138,6 +138,8 @@
 		src="<c:url value='/webResources/js/caramel/apiForm.js'/>"></script>
 	<script type="text/javascript"
 		src="<c:url value='/webResources/js/caramel/apiDataTable.js'/>"></script>
+	<script type="text/javascript"
+		src="<c:url value='/webResources/js/caramel/apiControllerTemplate.js'/>"></script>
 		
 
 

@@ -4,29 +4,21 @@
  * @author ArslanAnjum
  */
 app.controller('personsController',
-		['$scope','apiForm','apiDataTable',
-			function($scope,apiForm,apiDataTable){
+		['$scope','apiControllerTemplate',
+			function($scope,apiControllerTemplate){
 			
 			$scope.init = function(csrfParamName, csrfToken, csrfHeaderName,server,entity){
-				$scope.csrfParamName = csrfParamName;
-				$scope.csrfToken = csrfToken;
-				$scope.csrfHeaderName = csrfHeaderName;
-				$scope.server = server;
-				var dataTable = entity + 'DataTable';
-				var createForm = entity + 'Create';
-				
-				
 				var dataTableMetadata = 
-					{
-						name 		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-						address		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-						emailId 	:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-						phoneNumber :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
-						city		:{iType:'searchable-dropdown',fetch:'cities',required:true,editable:true,searchable:true,inGridVisible:true},
-						industry	:{iType:'searchable-dropdown',fetch:'industries',required:true,editable:true,searchable:true,inGridVisible:true},
-						badges		:{iType:'multiselect-dropdown',fetch:'badges',editable:true,searchable:true,inGridVisible:true}
-					};
-				
+				{
+					name 		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					address		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					emailId 	:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					phoneNumber :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					city		:{iType:'searchable-dropdown',fetch:'cities',required:true,editable:true,searchable:true,inGridVisible:true},
+					industry	:{iType:'searchable-dropdown',fetch:'industries',required:true,editable:true,searchable:true,inGridVisible:true},
+					badges		:{iType:'multiselect-dropdown',fetch:'badges',editable:true,searchable:true,inGridVisible:true}
+				};
+			
 				var createFormMetadata = 
 					{
 						name 		:{iType:'input',required:true},
@@ -38,20 +30,16 @@ app.controller('personsController',
 						badges		:{iType:'multiselect-dropdown',fetch:'badges'}
 					};
 				
-				
-				
-				$scope[dataTable] = new apiDataTable(
-						$scope,
+				apiControllerTemplate
+				.buildControllerTemplate(
+						csrfParamName,
+						csrfToken,
+						csrfHeaderName,
+						server,
 						entity,
-						dataTableMetadata
-				);
-				$scope[createForm] = new apiForm(
 						$scope,
-						entity,
-						createFormMetadata,
-						function(){
-							$scope[dataTable].update();
-						}
+						dataTableMetadata,
+						createFormMetadata
 				);
 			}
 		}]);

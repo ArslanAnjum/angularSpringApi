@@ -437,6 +437,7 @@
 						for (var prop in that.$scope[that.newObj])
 							that.$scope[that.newObj][prop] = null;
 						that.onCreate();
+						$('#'+that.name+"ModalAdd").modal('close');;
 					},
 					function(error){
 						that.toast(error);
