@@ -14,7 +14,8 @@
 					entity,
 					$scope,
 					dataTableMetadata,
-					createFormMetadata
+					createFormMetadata,
+					defaultPageSize
 			){
 				$scope.csrfParamName = csrfParamName;
 				$scope.csrfToken = csrfToken;
@@ -23,19 +24,34 @@
 				var dataTable = entity + 'DataTable';
 				var createForm = entity + 'Create';
 				
-				$scope[dataTable] = new apiDataTable(
-						$scope,
-						entity,
-						dataTableMetadata
-				);
-				$scope[createForm] = new apiForm(
-						$scope,
-						entity,
-						createFormMetadata,
-						function(){
-							$scope[dataTable].update();
-						}
-				);
+				if (dataTableMetadata){
+					$scope[dataTable] = new apiDataTable(
+							$scope,
+							entity,
+							dataTableMetadata,
+							defaultPageSize
+					);
+				}
+				
+				if (createFormMetadata && dataTableMetadata){
+					$scope[createForm] = new apiForm(
+							$scope,
+							entity,
+							createFormMetadata,
+							function(){
+								$scope[dataTable].update();
+							}
+					);
+				}else if (createFormMetadata && !dataTableMetadata){
+					$scope[createForm] = new apiForm(
+							$scope,
+							entity,
+							createFormMetadata,
+							function(){
+								console.log("nothing to update-please specify data table metadata also.");
+							}
+					);
+				}
 			}
 		}
 	])

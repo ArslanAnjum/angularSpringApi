@@ -30,8 +30,9 @@
 		var rows;
 		var inputs;
 		var searchTerms;
+		var pageSize;
 		
-		var apiDataTable = function($scope,entity,metadata){
+		var apiDataTable = function($scope,entity,metadata,defaultPageSize){
 			this.$scope = $scope;
 			this.name = entity + 'DataTable';
 			this.entity = entity;
@@ -55,8 +56,14 @@
 			this.singularEntity = this.getSingular(entity);
 			this.apiWrapper = new apiWrapper($scope);
 		
+			if (defaultPageSize !== null && defaultPageSize !== undefined && defaultPageSize !== 0 ){
+				this.pageSize = defaultPageSize;
+			}else{
+				this.pageSize = 20;
+			}
+			
 			if (!$scope[entity]){
-				this.apiWrapper.configPagination(0,10,this.singularEntity + "Id","desc");
+				this.apiWrapper.configPagination(0,this.pageSize,this.singularEntity + "Id","desc");
 				this.apiWrapper.fetchSortedPage(entity);
 			}
 			this.buildDataTable();
@@ -104,10 +111,19 @@
 						that.$scope[that.headings] = [];
 						that.$scope[that.searchTerms] = {};
 						that.$scope[that.tds] = [];
-						console.log(that.metadata);
-						for(var i=0;i<descriptors.length;i++){
-							var descriptor = descriptors[i];
-							if (that.metadata[descriptor.name] && that.metadata[descriptor.name].inGridVisible){
+						for (var prop in that.metadata){
+							var descriptor = null;
+							for (var j=0;j<descriptors.length;j++){
+								if (descriptors[j].name == prop){
+									if (that.metadata[descriptors[j].name] && that.metadata[descriptors[j].name].inGridVisible){
+										descriptor = descriptors[j];
+										break;
+									}
+								}
+								
+							}
+							
+							if (descriptor != null){
 								var metadata = that.metadata[descriptor.name];
 								var name = descriptor.name;
 								var label = that.getLabel(name);
@@ -205,8 +221,10 @@
 											"	</ul>\n";
 									}
 									
-									if (!that.$scope[metadata.fetch])
-										that.apiWrapper.fetchReferenceData(metadata.fetch);
+									if (metadata.searchable || metadata.editable){
+										if (!that.$scope[metadata.fetch])
+											that.apiWrapper.fetchReferenceData(metadata.fetch);
+									}
 									
 								}
 								
@@ -349,7 +367,7 @@
 				if (fetchAll){
 					this.$scope[this.searchTerms][name] = null;
 					this.apiWrapper = new apiWrapper(this.$scope);
-					this.apiWrapper.configPagination(0,10,this.singularEntity + "Id","desc");
+					this.apiWrapper.configPagination(0,this.pageSize,this.singularEntity + "Id","desc");
 					this.apiWrapper.fetchSortedPage(this.entity);
 				}else{
 					this.apiWrapper = new apiWrapper(this.$scope);
@@ -370,7 +388,7 @@
 					}else{
 						this.apiWrapper.addMoreSearchParams("val",this.$scope[this.searchTerms][name]);
 					}
-					this.apiWrapper.configPagination(0,10,this.singularEntity + "Id","desc");
+					this.apiWrapper.configPagination(0,this.pageSize,this.singularEntity + "Id","desc");
 					this.apiWrapper.fetchSortedPage(this.entity);
 				}
 			}
@@ -579,9 +597,19 @@
 						}
 					}
 					that.$scope[that.inputs] = [];
-					for(var i=0;i<descriptors.length;i++){
-						var descriptor = descriptors[i];
-							if (that.metadata[descriptor.name] && that.metadata[descriptor.name].editable){
+					for (var prop in that.metadata){
+						var descriptor = null;
+						for (var j=0;j<descriptors.length;j++){
+							if (descriptors[j].name == prop){
+								if (that.metadata[descriptors[j].name] && that.metadata[descriptors[j].name].editable){
+									descriptor = descriptors[j];
+									break;
+								}
+							}
+							
+						}
+						
+						if (descriptor != null){
 								var metadata = that.metadata[descriptor.name];
 								var id = descriptor.name;
 								var label = that.getLabel(id);

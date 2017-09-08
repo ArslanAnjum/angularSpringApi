@@ -98,9 +98,16 @@
 							}
 						}
 						that.$scope[that.inputs] = [];
-						for(var i=0;i<descriptors.length;i++){
-							var descriptor = descriptors[i];
-							if (that.metadata[descriptor.name]){
+						for (var prop in that.metadata){
+							var descriptor = null;
+							for (var j=0;j<descriptors.length;j++){
+								if (descriptors[j].name == prop && that.metadata[descriptors[j].name]){
+									descriptor = descriptors[j];
+									break;
+								}
+								
+							}
+							if (descriptor != null){
 								var metadata = that.metadata[descriptor.name];
 								var id = descriptor.name;
 								var label = that.getLabel(id);
