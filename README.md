@@ -1,22 +1,20 @@
 # Angular Spring REST API
 
-Its an AngularJS library to be used with Spring REST API. This repository contains an example project.
+Its an AngularJS library to be used with Spring REST API. This repository also contains an example project.
 
 ## Getting Started
 
 ### For running sample project, follow these steps:
 
-1- Clone this repository and open it in eclipse
+1- Clone this repository
 
-2- Edit data source properties in /src/resources/db.properties
+2- Edit data source properties in /src/main/resources/application.properties
 
 3- Create empty database/schema.
 
-4- Run mvn install and then start it in tomcat. This first run would create necessary tables in db.
+4- Run the scripts present in /sqlScripts/
 
-5- Run the scripts present in /sqlScripts/
-
-6- Open browser and type localhost:8080/angularSpringApi/ with default username : admin and password 123
+5- Open browser and type localhost:8080/angularSpringApi/ with default username : admin and password : 123
 
 ### To Use library
 
