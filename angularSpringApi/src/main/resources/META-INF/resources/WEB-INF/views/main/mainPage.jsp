@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-<title>XYZ</title>
+<title>Angular Spring Api</title>
 <meta charset="utf-8" />
 <meta name="author" content="ArslanAnjum" />
 <meta name="description" content="MainPage">
