@@ -1,6 +1,6 @@
 # Angular Spring REST API
 
-Its an AngularJS library to be used with Spring REST API. This repository also contains an example project.
+Its an AngularJS library to be used with Spring REST API. This repository also contains an example project and is deployed at https://angular-spring-api.herokuapp.com. Use username: "admin" and password: "123" to access it.
 
 ## Getting Started
 
