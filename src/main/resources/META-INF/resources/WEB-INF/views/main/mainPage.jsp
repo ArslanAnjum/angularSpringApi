@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
 <link
-	href="http://demo.geekslabs.com/materialize/v2.1/layout03/sass/components/_icons-material-design.scss"
+	href="https://demo.geekslabs.com/materialize/v2.1/layout03/sass/components/_icons-material-design.scss"
 	rel="stylesheet">
 
 
@@ -124,9 +124,9 @@
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.js"></script>
 	<script
-		src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-touch.js"></script>
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-touch.js"></script>
 	<script
-		src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
 	
 	
 	<!-- Angular JS Spring REST api wrapper dependencies -->
