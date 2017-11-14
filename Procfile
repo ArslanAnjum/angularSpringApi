@@ -1,1 +1,1 @@
-web: java -jar target/angularSpringApi-0.0.1-SNAPSHOT.jar
+web: java -jar target/angularSpringApi-0.0.1-SNAPSHOT.war
