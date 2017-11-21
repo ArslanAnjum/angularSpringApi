@@ -395,13 +395,17 @@
 		};
 		
 		apiForm.prototype.getSingular = function (entity){
-			var iesIndex = entity.indexOf('ies');
-			if (iesIndex != -1){
-				return entity.substring(0,iesIndex) + 'y';
-			}else{
-				return entity.substring(0,entity.length-1);
-			}
-		}
+            var iesIndex = entity.indexOf('ies');
+            var esIndex = entity.indexOf('es');
+
+            if (iesIndex != -1){
+                return entity.substring(0,iesIndex) + 'y';
+            }else if (esIndex != -1){
+                return entity.substring(0,esIndex);
+            }else{
+                return entity.substring(0,entity.length-1);
+            }
+        }
 		
 		apiForm.prototype.toast = function(msg){
 			Materialize.toast(msg, 2500,'blue rounded');
@@ -440,7 +444,6 @@
 			this.apiWrapper.create(this.entity,this.$scope[this.newObj],this.$scope,
 					function(response){
 						that.toast("Created");
-						that.$scope[that.newObj] = null;
 						for (var prop in that.$scope[that.newObj])
 							that.$scope[that.newObj][prop] = null;
 						that.onCreate();

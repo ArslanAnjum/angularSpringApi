@@ -967,13 +967,17 @@
 		};
 		
 		apiDataTable.prototype.getSingular = function (entity){
-			var iesIndex = entity.indexOf('ies');
-			if (iesIndex != -1){
-				return entity.substring(0,iesIndex) + 'y';
-			}else{
-				return entity.substring(0,entity.length-1);
-			}
-		}
+            var iesIndex = entity.indexOf('ies');
+            var esIndex = entity.indexOf('es');
+
+            if (iesIndex != -1){
+                return entity.substring(0,iesIndex) + 'y';
+            }else if (esIndex != -1){
+                return entity.substring(0,esIndex);
+            }else{
+                return entity.substring(0,entity.length-1);
+            }
+        }
 		
 		apiDataTable.prototype.nRows = function(){
 			var rows = [];
