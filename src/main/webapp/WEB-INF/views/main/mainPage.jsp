@@ -65,7 +65,7 @@
 					</div>
 					
 					<ul  class="right hide-on-med-and-down">
-						<li><a href="#/persons"
+						<li><a href="#/crud/persons"
 							class="waves-effect waves-block waves-light">Persons</a></li>
 					</ul>
 				</div>
