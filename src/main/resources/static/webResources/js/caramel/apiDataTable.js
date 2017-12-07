@@ -969,7 +969,7 @@
 		apiDataTable.prototype.getSingular = function (entity){
             var iesIndex = entity.lastIndexOf('ies');
             var esIndex = entity.lastIndexOf('es');
-            var length = entity.length();
+            var length = entity.length;
 
             if (iesIndex != -1 && iesIndex + 3 == length){
                 return entity.substring(0,iesIndex) + 'y';
