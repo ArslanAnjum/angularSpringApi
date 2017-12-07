@@ -4,6 +4,4 @@
 
 
 <!-- DIRECTIVES -->
-<!--
-<script src="<c:url value='/app/controllers/personsController.js'/>"></script>
--->
+<script src="/app/controllers/personsController.js"></script>
