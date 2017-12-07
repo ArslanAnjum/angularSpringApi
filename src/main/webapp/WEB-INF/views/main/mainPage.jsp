@@ -164,9 +164,7 @@
 	<script src="<c:url value='/app/app.js'/>"></script>
 	<script src="<c:url value='/app/routes.js'/>"></script>
 
-	<%@ include file="includeFiles/modelsList.jsp"%>
 	<%@ include file="includeFiles/directivesList.jsp"%>
-	<%@ include file="includeFiles/servicesList.jsp"%>
 	<%@ include file="includeFiles/controllersList.jsp"%>
 
 </body>

@@ -4,4 +4,6 @@
 
 
 <!-- DIRECTIVES -->
-<script src="/app/controllers/personsController.js"></script>
+<c:set var="basePath" value="/app/controllers/"/>
+
+<script src="${basePath}personsController.js"></script>
