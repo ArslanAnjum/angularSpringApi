@@ -16,7 +16,7 @@ app.controller('personsController',
 					phoneNumber :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
 					city		:{iType:'searchable-dropdown',fetch:'cities',required:true,editable:true,searchable:true,inGridVisible:true},
 					industry	:{iType:'searchable-dropdown',fetch:'industries',required:true,editable:true,searchable:true,inGridVisible:true},
-					badges		:{iType:'multiselect-dropdown',fetch:'badges',editable:true,searchable:true,inGridVisible:true}
+					badges		:{iType:'multiselect-dropdown',collectionType:'list', fetch:'badges',editable:true,searchable:true,inGridVisible:true}
 				};
 			
 				var createFormMetadata = 

@@ -283,11 +283,23 @@
 									var entityName = singleEntity + "." + singleEntity + "Name";
 									var entityId = singleEntity + "." + singleEntity + "Id";
 									var restResource = singleEntity + "._links.self.href";
-									
-									obj['content'] =
-										"<div class='chip blue white-text' " +
-										"ng-repeat=\""+singleEntity+" in "+that.singularEntity+"."+name+" | orderBy : '"+singleEntity+"Name'\" ng-bind=\""+entityName+"\"></p>\n";
-										
+
+									if (metadata.collectionType){
+									    if (metadata.collectionType == 'list'){
+                                        		obj['content'] =
+                                                    "<ul class='collection' style='max-height:100px;overflow:auto'>" +
+                                                    "   <li class='collection-item' "+
+                                                    "       ng-repeat=\""+singleEntity+" in "+that.singularEntity+"."+name+" | orderBy : '"+singleEntity+"Name'\" ng-bind=\""+entityName+"\">" +
+                                                    "   </li>"+
+                                                    "</ul>";
+                                        }
+									}
+									else{
+									    obj['content'] =
+                                            "<div class='chip blue white-text' " +
+                                            "ng-repeat=\""+singleEntity+" in "+that.singularEntity+"."+name+" | orderBy : '"+singleEntity+"Name'\" ng-bind=\""+entityName+"\"></div>\n";
+									}
+
 									if (metadata.searchable){
 										heading['content'] =
 											"<a class='dropdown-button' data-activates='"+that.name+name+"SearchUl' id='"+that.name+name+"SearchButton'><i style='position:relative; top:6px;' class=\"material-icons\">keyboard_arrow_down</i></a>\n"+
