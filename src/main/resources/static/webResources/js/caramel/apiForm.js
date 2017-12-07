@@ -395,12 +395,13 @@
 		};
 		
 		apiForm.prototype.getSingular = function (entity){
-            var iesIndex = entity.indexOf('ies');
-            var esIndex = entity.indexOf('es');
+            var iesIndex = entity.lastIndexOf('ies');
+            var esIndex = entity.lastIndexOf('es');
+            var length = entity.length();
 
-            if (iesIndex != -1){
+            if (iesIndex != -1 && iesIndex + 3 == length){
                 return entity.substring(0,iesIndex) + 'y';
-            }else if (esIndex != -1){
+            }else if (esIndex != -1 && iesIndex + 2 == length){
                 return entity.substring(0,esIndex);
             }else{
                 return entity.substring(0,entity.length-1);
