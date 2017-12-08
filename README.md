@@ -68,6 +68,7 @@ skeleton.jsp is use to build cruds
     </div>
  
 CrudController present in base package listens for all requests at /crud/{entity} and returns skeleton.jsp with heading and entity model params.
+
     @Controller
     @RequestMapping(value="/crud")
     public class CrudController extends BaseController{
@@ -87,7 +88,7 @@ CrudController present in base package listens for all requests at /crud/{entity
         	return "skeleton";
     	}
 	
-	}
+    }
 	
 routes.js for angular application would be as follows:
 
