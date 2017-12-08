@@ -24,40 +24,91 @@ Its an AngularJS library to be used with Spring REST API. This repository also c
 
 2- All Entities must have PagindAndSortingRepositories
 
-3- All Entities must have a projection named 'detail'
+3- All Entities which have referenced objects must have a projection named 'detail'
 
 4- Angular Dependencies:
 
     a) angular-bind-html-compile (https://github.com/incuna/angular-bind-html-compile)
-    b) api, apiWrapper, apiForm, apiDataTable and apiControllerTemplate (Present in /WebContent/webResources/js/caramel/)
 
 With above mentioned prerequisites you can start building CRUD for any entity.
 
 WebContent/views/skeleton.jsp is included in sample project which is used to build CRUD page.
 
-Sample Crud Page which uses skeleton.jsp as a template:
+skeleton.jsp is use to build cruds
 
     <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-      pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    
+    
+     
+    <div ng-controller="${entity}Controller"
+	 ng-init="init('${_csrf.parameterName}','${_csrf.token}','${_csrf.headerName}','${server}','${entity}')">
+	<div class="wrapper">
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12 m12 l12 center-align">
+						<h5 class = "viewHeading">${heading}</h5>
+					</div>
+				</div>
+			</div>
 
+			<div class="divider"></div>
 
-    <!-- Only modify these two variables -->
-    <c:set var="heading" value="Persons"/>
-    <c:set var="entity" value="persons"/>
-
-
-    <div ng-controller="personsController"
-      ng-init="init('${_csrf.parameterName}','${_csrf.token}','${_csrf.headerName}','${server}','${entity}')">
-      <jsp:include page="./skeleton.jsp">
-        <jsp:param name="heading" value="${heading}"/>
-        <jsp:param name="entity" value="${entity}"/>
-      </jsp:include>
+			<div class="section">
+				<div bind-html-compile="${entity}CreateDiv"></div>
+				<div bind-html-compile="${entity}DataTableDiv"></div>
+				<div bind-html-compile="${entity}DataTableEditDiv"></div>
+				<div bind-html-compile="${entity}DeleteConfirmationDiv"></div>
+				<div bind-html-compile="${entity}DataTablePaginator"></div>
+			</div>
+		</div>
+	</div>
     </div>
  
- Respective controller i.e., personsController must have following structure:
+CrudController present in base package listens for all requests at /crud/{entity} and returns skeleton.jsp with heading and entity model params.
+    @Controller
+    @RequestMapping(value="/crud")
+    public class CrudController extends BaseController{
 
-    app.controller('personsController',
+    	@GetMapping(value="/{entity}")
+    	public String getPersonPage(
+            @PathVariable("entity") String entity,
+            Model model
+    	){
+        	model.addAttribute(
+                "heading",
+                entity.substring(0,1).toUpperCase() +
+                        entity.substring(1,entity.length())
+        	);
+
+        	model.addAttribute("entity",entity);
+        	return "skeleton";
+    	}
+	
+	}
+	
+routes.js for angular application would be as follows:
+
+	'use strict';
+	
+	app.config(function ($routeProvider) {
+		$routeProvider
+		.when('/',{
+			templateUrl : 'crud/persons'
+		})
+		.when('/crud/:entity',{
+		    templateUrl : function(param){
+			return 'crud/' + param.entity;
+		    }
+		});
+	});
+
+Each entity collection must have an angular controller with naming convention as [entity name as produced by spring data rest]Controller
+For Example controller for persons would be name personsController.js and would have following structure:
+
+	app.controller('personsController',
         ['$scope','apiControllerTemplate,
           function($scope,apiForm,apiControllerTemplate){
 
@@ -119,6 +170,7 @@ Generic Structure and options are as follows:
           searchable      : [true,false],
           inGridVisible   : [true,false],
           fetch           : [entity name in spring api e.g., libraries. Mandatory for dropdown,searchable-dropdown and multiselect-dropdown],
+	  collectionType  : [list]
       }
     }
 
@@ -130,6 +182,7 @@ Generic Structure and options are as follows:
           type            : [applicable to <input>. default value is 'text'],
           required        : [true,false],
           fetch           : [entity name in spring api e.g., libraries. Mandatory for dropdown,searchable-dropdown and multiselect-dropdown],
+	  collectionType  : [list]
       }
     }
 
