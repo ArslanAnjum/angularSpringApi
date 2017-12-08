@@ -17,8 +17,7 @@
 					pathname = pathname.substring(0,slashIndex + 1);
 				}
 				var baseUrl = pathname + '/api/';
-				
-				
+
 				this.getReferenceData = function(entityName,onSuccess,onError){
 					var url = baseUrl + entityName + '?page=0&size=200';
 					$http

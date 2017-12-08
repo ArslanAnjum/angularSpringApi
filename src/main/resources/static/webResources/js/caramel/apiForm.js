@@ -301,7 +301,8 @@
 			
 			var that = this;
 			if (obj){
-				this.$scope[this.newObj][prop].href=obj._links.self.href;
+				/*this.$scope[this.newObj][prop].href=obj._links.self.href;*/
+				this.$scope[this.newObj][prop].href=this.resolveHref(obj,prop,{fetch:entity});
 				this.$scope[this.newObj][prop][searchable] = obj[searchable];
 				for (var i=0;i<that.$scope[that.inputs].length;i++){
 					if (that.$scope[that.inputs][i].id == prop){
@@ -331,7 +332,8 @@
 					var matchFound = false;
 					for (var i=0;i<lst.length;i++){
 						if (this.$scope[this.newObj][prop][searchable] == lst[i][searchable]){
-							this.$scope[this.newObj][prop].href = lst[i]._links.self.href;
+							//this.$scope[this.newObj][prop].href = lst[i]._links.self.href;
+							this.$scope[this.newObj][prop].href = this.resolveHref(lst[i],prop,{fetch:entity});
 							matchFound = true;
 							break;
 						}
@@ -393,7 +395,49 @@
 			
 			return JSON.parse(str);
 		};
-		
+
+		apiForm.prototype.resolveHref = function(obj,prop, metadata){
+            var href = null;
+            if (obj[prop + 'Id']){
+               var href =
+                    'http://' +
+                    window.location.host +
+                    '/api/' +
+                    metadata.fetch +
+                     '/' +
+                     obj[prop + 'Id'];
+            }else if (obj._links){
+                var href = obj._links.self.href;
+                var bIndex = href.indexOf("{");
+                href = href.substring(0,bIndex);
+            }
+
+            if (href == null)
+                throw 'href cannot be constructed';
+            else{
+                href = this.sanitizeHref(href);
+                return href;
+            }
+
+        };
+
+        apiForm.prototype.sanitizeHref = function(href){
+            var bIndex = href.indexOf("{");
+            if (bIndex > 0)
+                href = href.substring(0,bIndex);
+            return href;
+        }
+        apiForm.prototype.getIdFromHref = function(href){
+            var bIndex = href.indexOf("{");
+            if (bIndex > 0)
+                href = href.substring(0,bIndex);
+
+            bIndex = href.lastIndexOf("/");
+            if (bIndex > 0)
+                href = href.substring(bIndex+1,href.length);
+
+            return href;
+        };
 		apiForm.prototype.getSingular = function (entity){
             var iesIndex = entity.lastIndexOf('ies');
             var esIndex = entity.lastIndexOf('es');

@@ -528,6 +528,7 @@
 		apiWrapper.prototype.create = function(entityName,entity,$scope,callBack,errorCallBack){
 			api.create(entityName,entity,$scope,callBack,errorCallBack);
 		}
+
 		return apiWrapper;
 }]);
 }(window.angular));

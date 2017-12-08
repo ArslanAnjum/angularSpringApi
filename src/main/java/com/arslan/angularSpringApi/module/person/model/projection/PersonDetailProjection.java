@@ -2,6 +2,9 @@ package com.arslan.angularSpringApi.module.person.model.projection;
 
 import java.util.Set;
 
+import com.arslan.angularSpringApi.module.person.model.Badge;
+import com.arslan.angularSpringApi.module.person.model.City;
+import com.arslan.angularSpringApi.module.person.model.Industry;
 import org.springframework.data.rest.core.config.Projection;
 
 import com.arslan.angularSpringApi.module.person.model.Person;
@@ -14,7 +17,10 @@ public interface PersonDetailProjection {
 	String getAddress();
 	String getEmailId();
 	String getPhoneNumber();
-	CityDetailProjection getCity();
+	/*CityDetailProjection getCity();
 	IndustryDetailProjection getIndustry();
-	Set<BadgeDetailProjection> getBadges();
+	Set<BadgeDetailProjection> getBadges();*/
+	City getCity();
+	Industry getIndustry();
+	Set<Badge> getBadges();
 }

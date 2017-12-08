@@ -31,7 +31,7 @@
 		var inputs;
 		var searchTerms;
 		var pageSize;
-		
+
 		var apiDataTable = function($scope,entity,metadata,defaultPageSize){
 			this.$scope = $scope;
 			this.name = entity + 'DataTable';
@@ -413,41 +413,33 @@
 			this.$scope[this.editEntity] = angular.copy(entity);
 			
 			var obj = this.$scope[this.editEntity];
+            var baseUrl = window.location.host + '/api/';
+
 			console.log(obj);
+
 			for (var prop in this.metadata){
 				if (typeof(obj[prop]) == 'object'){
 					if (this.metadata[prop].iType == 'dropdown'){
 						try{
-							if (obj[prop]._links.self.href){
-								var href = obj[prop]._links.self.href;
-								var bIndex = href.indexOf("{");
-								href = href.substring(0,bIndex);
-								obj[prop] = href;
-							}
+						    obj[prop] = this.resolveHref(obj[prop],prop,this.metadata[prop]);
 						}catch(err){
 							console.log(err);
 						}
 					}
 					if (this.metadata[prop].iType == 'searchable-dropdown'){
 						try{
-							if (obj[prop]._links.self.href){
-								var href = obj[prop]._links.self.href;
-								var bIndex = href.indexOf("{");
-								href = href.substring(0,bIndex);
-								obj[prop].href = href;
-							}
+						    obj[prop].href = this.resolveHref(obj[prop],prop,this.metadata[prop]);
 						}catch(err){
 							console.log(err);
 						}
 					}
 					if (this.metadata[prop].iType == 'multiselect-dropdown'){
 						try{
+						    var singularProp = this.getSingular(prop);
 							var hrefs = [];
 							for (var i=0;i<obj[prop].length;i++){
 								var cObj = obj[prop][i];
-								var href = cObj._links.self.href;
-								href = this.sanitizeHref(href);
-								hrefs.push(href);
+								hrefs.push(this.resolveHref(cObj,singularProp,this.metadata[prop]));
 							}
 							obj[prop] = hrefs;
 						}catch(err){
@@ -456,14 +448,15 @@
 					}
 				}
 			}
-			
+
+			console.log(this.$scope[this.editEntity]);
 			this.$scope[this.editEntityCopy] = angular.copy(this.$scope[this.editEntity]);
 			$('#'+this.editModal).modal('open');
 			$timeout(function(){
 				$('select').material_select();
 			},200);
 		};
-		
+
 		apiDataTable.prototype.buildPaginator = function(){
 			var that = this;
 			var content = 
@@ -805,7 +798,9 @@
 			
 			var that = this;
 			if (obj){
-				this.$scope[this.editEntity][prop].href=obj._links.self.href;
+
+				/*this.$scope[this.editEntity][prop].href=obj._links.self.href;*/
+				this.$scope[this.editEntity][prop].href=this.resolveHref(obj,prop,{fetch:entity});
 				this.$scope[this.editEntity][prop][searchable] = obj[searchable];
 				for (var i=0;i<that.$scope[that.inputs].length;i++){
 					if (that.$scope[that.inputs][i].id == prop){
@@ -835,7 +830,8 @@
 					var matchFound = false;
 					for (var i=0;i<lst.length;i++){
 						if (this.$scope[this.editEntity][prop][searchable] == lst[i][searchable]){
-							this.$scope[this.editEntity][prop].href = lst[i]._links.self.href;
+							/*this.$scope[this.editEntity][prop].href = lst[i]._links.self.href;*/
+							this.$scope[this.editEntity][prop].href = this.resolveHref(lst[i],prop,{fetch:entity});
 							matchFound = true;
 							break;
 						}
@@ -886,7 +882,8 @@
 			
 			var that = this;
 			if (obj){
-				this.$scope[this.searchTerms][prop].href=obj._links.self.href;
+				//this.$scope[this.searchTerms][prop].href=obj._links.self.href;
+				this.$scope[this.searchTerms][prop].href=this.resolveHref(obj,prop,{fetch:entity});
 				this.$scope[this.searchTerms][prop][searchable] = obj[searchable];
 				for (var i=0;i<that.$scope[that.headings].length;i++){
 					if (that.$scope[that.headings][i].id == prop){
@@ -917,7 +914,8 @@
 					var matchFound = false;
 					for (var i=0;i<lst.length;i++){
 						if (this.$scope[this.editEntity][prop][searchable] == lst[i][searchable]){
-							this.$scope[this.editEntity][prop].href = lst[i]._links.self.href;
+							//this.$scope[this.editEntity][prop].href = lst[i]._links.self.href;
+							this.$scope[this.editEntity][prop].href = this.resolveHref(lst[i],prop,{fetch:entity});
 							matchFound = true;
 							break;
 						}
@@ -957,7 +955,50 @@
 			  
 			  return "findBy" + str;
 		};
-		
+
+        apiDataTable.prototype.resolveHref = function(obj,prop, metadata){
+            var href = null;
+            if (obj[prop + 'Id']){
+               var href =
+                    'http://' +
+                    window.location.host +
+                    '/api/' +
+                    metadata.fetch +
+                     '/' +
+                     obj[prop + 'Id'];
+            }else if (obj._links){
+                var href = obj._links.self.href;
+                var bIndex = href.indexOf("{");
+                href = href.substring(0,bIndex);
+            }
+
+            if (href == null)
+                throw 'href cannot be constructed';
+            else{
+                href = this.sanitizeHref(href);
+                return href;
+            }
+
+        };
+
+        apiDataTable.prototype.sanitizeHref = function(href){
+            var bIndex = href.indexOf("{");
+            if (bIndex > 0)
+                href = href.substring(0,bIndex);
+            return href;
+        }
+        apiDataTable.prototype.getIdFromHref = function(href){
+            var bIndex = href.indexOf("{");
+            if (bIndex > 0)
+                href = href.substring(0,bIndex);
+
+            bIndex = href.lastIndexOf("/");
+            if (bIndex > 0)
+                href = href.substring(bIndex+1,href.length);
+
+            return href;
+        };
+
 		apiDataTable.prototype.getJSON = function(str){
 			
 			var str = 
@@ -1048,23 +1089,7 @@
 						that.toast(error.statusText);
 					});
 		};
-		apiDataTable.prototype.sanitizeHref = function(href){
-			var bIndex = href.indexOf("{");
-			if (bIndex > 0)
-				href = href.substring(0,bIndex);		
-			return href;
-		}
-		apiDataTable.prototype.getIdFromHref = function(href){
-			var bIndex = href.indexOf("{");
-			if (bIndex > 0)
-				href = href.substring(0,bIndex);
-			
-			bIndex = href.lastIndexOf("/");
-			if (bIndex > 0)
-				href = href.substring(bIndex+1,href.length);
-			
-			return href;
-		}
+
 		apiDataTable.prototype.resetForm = function(){
 			this.$scope[this.form].$setPristine();
 			this.$scope[this.editEntity] = angular.copy(this.$scope[this.editEntityCopy]);
