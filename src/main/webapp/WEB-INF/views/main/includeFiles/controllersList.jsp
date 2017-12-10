@@ -7,3 +7,4 @@
 <c:set var="basePath" value="/app/controllers/"/>
 
 <script src="${basePath}personsController.js"></script>
+<script src="${basePath}booksController.js"></script>

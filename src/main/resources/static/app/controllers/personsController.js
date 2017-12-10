@@ -10,7 +10,7 @@ app.controller('personsController',
 			$scope.init = function(csrfParamName, csrfToken, csrfHeaderName,server,entity){
 				var dataTableMetadata = 
 				{
-					name 		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
+					personName 		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
 					address		:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
 					emailId 	:{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
 					phoneNumber :{iType:'input',required:true,editable:true,searchable:true,inGridVisible:true},
@@ -21,7 +21,7 @@ app.controller('personsController',
 			
 				var createFormMetadata = 
 					{
-						name 		:{iType:'input',required:true},
+						personName 		:{iType:'input',required:true},
 						address		:{iType:'input',required:true},
 						emailId 	:{iType:'input',type:'email',required:true},
 						phoneNumber :{iType:'input',required:true},

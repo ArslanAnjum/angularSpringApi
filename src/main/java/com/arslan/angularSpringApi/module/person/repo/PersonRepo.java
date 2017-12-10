@@ -20,7 +20,7 @@ public interface PersonRepo extends PagingAndSortingRepository<Person, Integer>{
 			+ "("
 			+ "	(:val is not null) and "
 			+ "	("
-			+ "		(p.name like :#{@convertor.toString(#val)}% and :prop = 'name') or "
+			+ "		(p.personName like :#{@convertor.toString(#val)}% and :prop = 'personName') or "
 			+ "		(p.address like :#{@convertor.toString(#val)}% and :prop = 'address') or "
 			+ "		(p.emailId like :#{@convertor.toString(#val)}% and :prop = 'emailId') or "
 			+ "		(p.phoneNumber like :#{@convertor.toString(#val)}% and :prop = 'phoneNumber') or "

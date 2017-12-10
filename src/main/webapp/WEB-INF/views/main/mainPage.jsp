@@ -67,6 +67,8 @@
 					<ul  class="right hide-on-med-and-down">
 						<li><a href="#/crud/persons"
 							class="waves-effect waves-block waves-light">Persons</a></li>
+						<li><a href="#/crud/books"
+							   class="waves-effect waves-block waves-light">Books</a></li>
 					</ul>
 				</div>
 			</nav>

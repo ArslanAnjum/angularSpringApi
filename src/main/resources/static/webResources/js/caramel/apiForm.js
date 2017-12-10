@@ -25,6 +25,7 @@
 		var inputs;
 		var newObj;
 		var rows;
+		var cols;
 		var metadata;
 		var onCreate;
 		
@@ -41,7 +42,7 @@
 			this.singularEntity = this.getSingular(this.entity);
 			this.metadata = metadata;
 			this.onCreate = onCreate;
-			
+			this.cols = 3;
 			this.buildForm();
 		};
 		
@@ -57,7 +58,7 @@
 				"		</a>\n"+
 				"	</div>\n"+
 				"</div>\n"+
-				"<div id=\""+this.name+"ModalAdd\" class=\"modal\" style=\"max-height: 80%\" >\n"+
+				"<div id=\""+this.name+"ModalAdd\" class=\"modal\" style=\"max-height: 80%;width: 80%\" >\n"+
 				"	<div class=\"modal-content\" style=\"overflow:visible;\">\n"+
 				"		<div class=\"window-table-div-border\">\n"+
 				"			<h1>\n"+
@@ -66,7 +67,7 @@
 				"			<form name=\""+this.form+"\" ng-submit=\""+this.name+".onSubmit()\">\n" +
 				"				<div class=\"row\"\n" +
 				"					ng-repeat=\"row in "+this.name+".nRows()\">\n"+	
-				"					<div class=\"col m12 s12 l6\"\n" +
+				"					<div class=\"col m12 s12 l4\"\n" +
 				"						ng-repeat=\"col in "+this.name+".nCols()\" bind-html-compile=\""+this.inputs+"[row*2+col].content\">\n"+
 				"					</div>\n"+
 				"				</div>\n"+
@@ -254,7 +255,7 @@
 						}
 						
 						that.rows = [];
-						that.rows = that.$scope[that.inputs].length / 2;
+						that.rows = that.$scope[that.inputs].length / that.cols;
 						
 						$timeout(function(){
 							$('#'+that.name+"ModalAdd").modal({
@@ -463,7 +464,10 @@
 			return rows;
 		}
 		apiForm.prototype.nCols = function(){
-			return [0,1];
+		    var cols = [];
+		    for (var i=0;i<this.cols;i++)
+			    cols.push(i)
+			return cols;
 		}
 		
 		apiForm.prototype.onSubmit = function(){

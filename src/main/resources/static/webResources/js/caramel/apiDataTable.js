@@ -28,6 +28,7 @@
 		var deleteConfirmationModal;
 		var form;
 		var rows;
+		var cols;
 		var inputs;
 		var searchTerms;
 		var pageSize;
@@ -55,7 +56,8 @@
 			this.editModalBuilt = false;
 			this.singularEntity = this.getSingular(entity);
 			this.apiWrapper = new apiWrapper($scope);
-		
+		    this.cols = 3;
+
 			if (defaultPageSize !== null && defaultPageSize !== undefined && defaultPageSize !== 0 ){
 				this.pageSize = defaultPageSize;
 			}else{
@@ -544,7 +546,7 @@
 			
 			var that = this;
 			var content =
-				"<div id=\""+this.editModal+"\" class=\"modal\" style=\"max-height: 80%\" >\n"+
+				"<div id=\""+this.editModal+"\" class=\"modal\" style=\"max-height: 80%; width: 80%\" >\n"+
 				"	<div class=\"modal-content\" style=\"overflow:visible;\">\n"+
 				"		<div class=\"window-table-div-border\">\n"+
 				"			<h1>\n"+
@@ -573,7 +575,7 @@
 				"<form name=\""+this.form+"\" ng-submit=\""+this.name+".onSubmit()\">\n" +
 					"<div class=\"row\"\n" +
 						 "ng-repeat=\"row in "+this.name+".nRows()\">\n"+	
-						 "<div class=\"col m12 s12 l6\"\n" +
+						 "<div class=\"col m12 s12 l4\"\n" +
 						 	  "ng-repeat=\"col in "+this.name+".nCols()\" bind-html-compile=\""+this.inputs+"[row*2+col].content\">\n"+
 						 "</div>\n"+
 					"</div>\n"+
@@ -760,7 +762,7 @@
 						}
 						
 						that.rows = [];
-						that.rows = that.$scope[that.inputs].length / 2;
+						that.rows = that.$scope[that.inputs].length / that.cols;
 					},
 					function(error){
 						console.log(error);
@@ -1040,7 +1042,10 @@
 			return rows;
 		}
 		apiDataTable.prototype.nCols = function(){
-			return [0,1];
+			var cols = [];
+            for (var i=0;i<this.cols;i++)
+                cols.push(i)
+            return cols;
 		}
 		apiDataTable.prototype.toast = function(msg){
 			Materialize.toast(msg, 2500,'blue rounded');
