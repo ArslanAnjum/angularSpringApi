@@ -166,11 +166,25 @@
 					headerz['Content-Type'] = 'application/json';
 					headerz[$scope.csrfHeaderName] = $scope.csrfToken;
 					
-					$http.post(url,JSON.stringify(entity),{
+					/*$http.post(url,JSON.stringify(entity),{
 						transformRequest : angular.identity,
 						headers : headerz
 					})
-					.then(onSuccess,onError);
+					.then(onSuccess,onError);*/
+
+					$http.post(url,JSON.stringify(entity),{
+                        transformRequest : angular.identity,
+                        headers : headerz
+                    })
+                    .then(
+                        function(response){
+                            onSuccess(response);
+                        },
+                        function(response){
+                            onError(response);
+                        }
+                    );
+
 				}
 				this.updateSelf = function(object,payload,$scope,onSuccess,onError){
 					
