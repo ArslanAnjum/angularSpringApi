@@ -526,7 +526,18 @@
 		}
 		
 		apiWrapper.prototype.create = function(entityName,entity,$scope,callBack,errorCallBack){
-			api.create(entityName,entity,$scope,callBack,errorCallBack);
+		    var scope = this.$scope;
+			api.create(
+			    entityName,
+			    entity,
+			    $scope,
+			    function(response){
+			        callBack(response,scope);
+			    },
+			    function(response){
+			        errorCallBack(response,scope);
+			    }
+			    );
 		}
 
 		return apiWrapper;
