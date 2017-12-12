@@ -176,14 +176,12 @@
                         transformRequest : angular.identity,
                         headers : headerz
                     })
-                    .then(
-                        function(response){
+                    .success(function(response){
                             onSuccess(response);
-                        },
-                        function(response){
+                    })
+                    .error(function(response){
                             onError(response);
-                        }
-                    );
+                    });
 
 				}
 				this.updateSelf = function(object,payload,$scope,onSuccess,onError){
