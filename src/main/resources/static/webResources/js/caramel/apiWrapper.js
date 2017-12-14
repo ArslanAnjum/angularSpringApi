@@ -200,7 +200,7 @@
 					that.applyInitDatePicker();
 					
 					if (that.isValid(callBack))
-						callBack(response);
+						callBack(response,that.$scope);
 				});
 			}else{
 				api.fetchSortedPage
