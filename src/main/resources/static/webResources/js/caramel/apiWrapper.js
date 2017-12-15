@@ -512,7 +512,15 @@
 		}
 		
 		apiWrapper.prototype.update = function(entityName,entity,$scope,callBack,errorCallBack){
-			api.update(entityName,entity,$scope,callBack,errorCallBack);
+			var that = this;
+			api.update(
+			    entityName,
+			    entity,
+			    $scope,
+			    function(response){
+			        callBack(response,that.$scope);
+			    },
+			    errorCallBack);
 		}
 		apiWrapper.prototype.getProfile = function(entity,onSuccess,onError){
 			
