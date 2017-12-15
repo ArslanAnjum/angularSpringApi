@@ -503,7 +503,7 @@
 					that.$scope,
 					function(){
 						that.toast('Deleted');
-						onSuccess();
+						onSuccess(that.$scope);
 					},
 					function(){
 						that.toast('Cannot Delete');
