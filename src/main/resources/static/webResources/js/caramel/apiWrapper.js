@@ -241,33 +241,33 @@
 					that.applyInitDatePicker();
 					
 					if (that.isValid(callBack))
-						callBack(response);
+						callBack(response,that.$scope);
 				});
 			}
 		}
 		
-		apiWrapper.prototype.fetchNextPage = function(entity){
+		apiWrapper.prototype.fetchNextPage = function(entity,callBack){
 			if (this.page + 1 < this.totalPages){
 				this.page = this.page + 1;
-				this.fetchSortedPage(entity);
+				this.fetchSortedPage(entity,callBack);
 			}
 		}
 
-		apiWrapper.prototype.fetchPreviousPage = function(entity){
+		apiWrapper.prototype.fetchPreviousPage = function(entity,callBack){
 			if (this.page > 0){
 				this.page = this.page - 1;
-				this.fetchSortedPage(entity);
+				this.fetchSortedPage(entity,callBack);
 			}
 		}
 		
-		apiWrapper.prototype.firstPage = function(entity){
+		apiWrapper.prototype.firstPage = function(entity,callBack){
 			this.page = 0;
-			this.fetchSortedPage(entity);
+			this.fetchSortedPage(entity,callBack);
 		}
 		
-		apiWrapper.prototype.lastPage = function(entity){
+		apiWrapper.prototype.lastPage = function(entity,callBack){
 			this.page = this.totalPages - 1;
-			this.fetchSortedPage(entity);
+			this.fetchSortedPage(entity,callBack);
 		}
 		
 		/**
