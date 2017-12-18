@@ -576,12 +576,12 @@
 					"<div class=\"row\"\n" +
 						 "ng-repeat=\"row in "+this.name+".nRows()\">\n"+	
 						 "<div class=\"col m12 s12 l4\"\n" +
-						 	  "ng-repeat=\"col in "+this.name+".nCols()\" bind-html-compile=\""+this.inputs+"[row*2+col].content\">\n"+
+						 	  "ng-repeat=\"col in "+this.name+".nCols()\" bind-html-compile=\""+this.inputs+"[row*3+col].content\">\n"+
 						 "</div>\n"+
 					"</div>\n"+
 					"<div class=\"row\">\n"+
 						"<div class=\"col s12 m6 l6 center-align\">\n"+
-								"<input type=\"submit\" value=\"Update\"\n"+ 
+								"<input type=\"submit\" value=\"Update\"\n"+
 								"class=\"btn\" ng-disabled=\"!(!"+this.form+".$invalid && !"+this.form+".$pristine)\">\n"+
 						"</div>\n"+
 						"<div class=\"col s12 m6 l6 center-align\">\n"+
@@ -590,7 +590,7 @@
 						"</div>\n"+
 					"</div>\n"+
 				"</form>\n";
-			
+
 			this.$scope[this.editModalBody] = content;
 			this.apiWrapper.getProfile(
 					this.
@@ -613,18 +613,18 @@
 									break;
 								}
 							}
-							
+
 						}
-						
+
 						if (descriptor != null){
 								var metadata = that.metadata[descriptor.name];
 								var id = descriptor.name;
 								var label = that.getLabel(id);
-								
+
 								that.$scope[that.inputs].push({id:id});
 								var cIndex = that.$scope[that.inputs].length - 1;
 								var obj = that.$scope[that.inputs][cIndex];
-								
+
 								if (metadata.type)obj['type']=metadata.type;
 								if (metadata.required){
 									obj['klass'] = 'validate';
@@ -633,38 +633,38 @@
 								}else{
 									obj['label'] = label;
 								}
-								
+
 								if (metadata.iType == 'input'){
 									if (metadata.type && metadata.type == 'binary'){
 										if (!that.$scope.bOptions)
 											that.$scope.bOptions = [true,false];
-										obj['content'] = 
-											"<label class=\"active\"\n"+ 
-													"for=\"{{"+that.inputs+"[row*2+col].id}}\"\n"+
-													"ng-bind=\""+that.inputs+"[row*2+col].label\">\n"+
+										obj['content'] =
+											"<label class=\"active\"\n"+
+													"for=\"{{"+that.inputs+"[row*3+col].id}}\"\n"+
+													"ng-bind=\""+that.inputs+"[row*3+col].label\">\n"+
 											"</label>\n"+
 											"<select class=\"applyMaterialSelect\"\n"+
-													"ng-class=\""+that.inputs+"[row*2+col].klass\"\n"+ 
-													"ng-required=\""+that.inputs+"[row*2+col].required\"\n"+
+													"ng-class=\""+that.inputs+"[row*3+col].klass\"\n"+
+													"ng-required=\""+that.inputs+"[row*3+col].required\"\n"+
 													"ng-options=\"option for option in bOptions\"\n"+
-													"ng-model=\""+that.editEntity+"["+that.inputs+"[row*2+col].id]\">\n"+
+													"ng-model=\""+that.editEntity+"["+that.inputs+"[row*3+col].id]\">\n"+
 													"<option value='' disabled>Choose "+label+"</option>\n"+
 											"</select>\n";
-																				
+
 									}else{
-										obj['content'] = 
-											"<label class=\"active\"\n"+ 
-													"for=\"{{"+that.inputs+"[row*2+col].id}}\"\n"+
-													"ng-bind=\""+that.inputs+"[row*2+col].label\">\n"+
-													
+										obj['content'] =
+											"<label class=\"active\"\n"+
+													"for=\"{{"+that.inputs+"[row*3+col].id}}\"\n"+
+													"ng-bind=\""+that.inputs+"[row*3+col].label\">\n"+
+
 											"</label>\n"+
-											"<input	id=\"{{"+that.inputs+"[row*2+col].id}}\"\n"+ 
-													"type=\"{{"+that.inputs+"[row*2+col].type ? "+that.inputs+"[row*2+col].type : 'text'}}\"\n"+ 
-													"ng-model=\""+that.editEntity+"["+that.inputs+"[row*2+col].id]\"\n"+
-													"ng-class=\""+that.inputs+"[row*2+col].klass\"\n"+ 
-													"ng-required=\""+that.inputs+"[row*2+col].required\" />\n";
+											"<input	id=\"{{"+that.inputs+"[row*3+col].id}}\"\n"+
+													"type=\"{{"+that.inputs+"[row*3+col].type ? "+that.inputs+"[row*3+col].type : 'text'}}\"\n"+
+													"ng-model=\""+that.editEntity+"["+that.inputs+"[row*3+col].id]\"\n"+
+													"ng-class=\""+that.inputs+"[row*3+col].klass\"\n"+
+													"ng-required=\""+that.inputs+"[row*3+col].required\" />\n";
 									}
-									
+
 								}
 								if (metadata.iType == 'dropdown'){
 									var singleEntity = that.getSingular(metadata.fetch);
@@ -673,25 +673,25 @@
 									var entityName = singleEntity + "." + singleEntity + "Name";
 									var entityId = singleEntity + "." + singleEntity + "Id";
 									var restResource = singleEntity + "._links.self.href";
-									
-									obj['content'] = 
-										"<label class=\"active\"\n"+ 
-												"for=\"{{"+that.inputs+"[row*2+col].id}}\"\n"+
-												"ng-bind=\""+that.inputs+"[row*2+col].label\">\n"+
+
+									obj['content'] =
+										"<label class=\"active\"\n"+
+												"for=\"{{"+that.inputs+"[row*3+col].id}}\"\n"+
+												"ng-bind=\""+that.inputs+"[row*3+col].label\">\n"+
 										"</label>\n"+
 										"<select class=\"applyMaterialSelect\"\n"+
-												"ng-class=\""+that.inputs+"[row*2+col].klass\"\n"+ 
-												"ng-required=\""+that.inputs+"[row*2+col].required\"\n"+
+												"ng-class=\""+that.inputs+"[row*3+col].klass\"\n"+
+												"ng-required=\""+that.inputs+"[row*3+col].required\"\n"+
 												"ng-options=\"" + restResource + " as " + entityName + " for " + entitySingle + " in " + entityList + "\"\n"+
-												"ng-model=\""+that.editEntity+"["+that.inputs+"[row*2+col].id]\">\n"+
+												"ng-model=\""+that.editEntity+"["+that.inputs+"[row*3+col].id]\">\n"+
 												"<option value='' disabled>Choose "+label+"</option>\n"+
 										"</select>\n";
-									
+
 									if (!that.$scope[metadata.fetch]){
 										that.apiWrapper.fetchReferenceData(metadata.fetch);
 									}
 								}
-								
+
 								if (metadata.iType == 'searchable-dropdown'){
 									var singleEntity = that.getSingular(metadata.fetch);
 									var entityList = metadata.fetch;
@@ -699,56 +699,56 @@
 									var entityName = singleEntity + "." + singleEntity + "Name";
 									var entityId = singleEntity + "." + singleEntity + "Id";
 									var restResource = singleEntity + "._links.self.href";
-									
-									obj['content'] = 
-										"<label class=\"active\"\n"+ 
-										"		for=\"{{"+that.inputs+"[row*2+col].id}}\"\n"+
-										"		ng-bind=\""+that.inputs+"[row*2+col].label\">\n"+
+
+									obj['content'] =
+										"<label class=\"active\"\n"+
+										"		for=\"{{"+that.inputs+"[row*3+col].id}}\"\n"+
+										"		ng-bind=\""+that.inputs+"[row*3+col].label\">\n"+
 										"</label>\n"+
-										"<input id=\"{{"+that.inputs+"[row*2+col].id}}\" \n"+
-										"		ng-class=\""+that.inputs+"[row*2+col].klass\"\n"+ 
-										"		ng-required=\""+that.inputs+"[row*2+col].required\"\n"+
-										"		placeholder='Choose "+label+"'\n"+	
+										"<input id=\"{{"+that.inputs+"[row*3+col].id}}\" \n"+
+										"		ng-class=\""+that.inputs+"[row*3+col].klass\"\n"+
+										"		ng-required=\""+that.inputs+"[row*3+col].required\"\n"+
+										"		placeholder='Choose "+label+"'\n"+
 										"		type='text' \n"+
-										"		ng-model=\""+that.editEntity+"["+that.inputs+"[row*2+col].id]."+singleEntity+"Name"+"\"\n"+
-										"		ng-change=\""+that.name+".getSearchableData("+that.inputs+"[row*2+col].id"+",'"+singleEntity+"Name'"+",'"+metadata.fetch+"')\"\n"+
-										"		ng-blur=\""+that.name+".setSearchableData("+that.inputs+"[row*2+col].id"+",'"+singleEntity+"Name'"+",'"+metadata.fetch+"')\"\n"+
+										"		ng-model=\""+that.editEntity+"["+that.inputs+"[row*3+col].id]."+singleEntity+"Name"+"\"\n"+
+										"		ng-change=\""+that.name+".getSearchableData("+that.inputs+"[row*3+col].id"+",'"+singleEntity+"Name'"+",'"+metadata.fetch+"')\"\n"+
+										"		ng-blur=\""+that.name+".setSearchableData("+that.inputs+"[row*3+col].id"+",'"+singleEntity+"Name'"+",'"+metadata.fetch+"')\"\n"+
 										"		autocomplete=\"off\"\n"+
 										"		required\n"+
 										"		>\n"+
-										
+
 										"<ul class=\"collection black-text\"\n"+
 										"	style='max-height:200px;overflow: scroll;\n"+
 										"			position:absolute;z-index: 1000;\n"+
 										"			width:310px;max-width:310px;margin:0px'\n"+
-										"	ng-show=\""+that.inputs+"[row*2+col].showSearchedData && "+entityList+" && "+entityList+".length > 0\">\n"+
+										"	ng-show=\""+that.inputs+"[row*3+col].showSearchedData && "+entityList+" && "+entityList+".length > 0\">\n"+
 										"	\n"+
 										"	<li class=\"collection-item\"\n"+
 										"		ng-repeat=\""+singleEntity+" in "+entityList+"\"\n"+
 										"		ng-bind=\""+entityName+"\"\n"+
-										"		ng-click=\""+that.name+".setSearchableData("+that.inputs+"[row*2+col].id"+",'"+singleEntity+"Name'"+",'"+metadata.fetch+"',"+singleEntity+")\"></li>\n"+
+										"		ng-click=\""+that.name+".setSearchableData("+that.inputs+"[row*3+col].id"+",'"+singleEntity+"Name'"+",'"+metadata.fetch+"',"+singleEntity+")\"></li>\n"+
 										"</ul>\n";
 								}
-								
+
 								if (metadata.iType == 'multiselect-dropdown'){
-								
+
 									var singleEntity = that.getSingular(metadata.fetch);
 									var entityList = metadata.fetch;
 									var entitySingle = singleEntity;
 									var entityName = singleEntity + "." + singleEntity + "Name";
 									var entityId = singleEntity + "." + singleEntity + "Id";
 									var restResource = singleEntity + "._links.self.href";
-									
-									obj['content'] = 
-										"<label class=\"active\"\n"+ 
-												"for=\"{{"+that.inputs+"[row*2+col].id}}\"\n"+
-												"ng-bind=\""+that.inputs+"[row*2+col].label\">\n"+
+
+									obj['content'] =
+										"<label class=\"active\"\n"+
+												"for=\"{{"+that.inputs+"[row*3+col].id}}\"\n"+
+												"ng-bind=\""+that.inputs+"[row*3+col].label\">\n"+
 										"</label>\n"+
 										"<select class=\"applyMaterialSelect\" multiple\n"+
-												"ng-class=\""+that.inputs+"[row*2+col].klass\"\n"+ 
-												"ng-required=\""+that.inputs+"[row*2+col].required\"\n"+
+												"ng-class=\""+that.inputs+"[row*3+col].klass\"\n"+
+												"ng-required=\""+that.inputs+"[row*3+col].required\"\n"+
 												"ng-options=\"" + restResource + " as " + entityName + " for " + entitySingle + " in " + entityList + "\"\n"+
-												"ng-model=\""+that.editEntity+"["+that.inputs+"[row*2+col].id]\">\n"+
+												"ng-model=\""+that.editEntity+"["+that.inputs+"[row*3+col].id]\">\n"+
 												"<option value='' disabled>Choose "+label+"</option>\n"+
 										"</select>\n";
 										
