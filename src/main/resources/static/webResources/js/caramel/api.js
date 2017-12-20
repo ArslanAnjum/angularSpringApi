@@ -65,7 +65,7 @@
 						.then(onSuccess,onError);
 				}
 				
-				this.fetchSortedPage = function(	entity,
+				/*this.fetchSortedPage = function(	entity,
 													projection,
 													page,
 													size,
@@ -94,13 +94,14 @@
 				}
 				
 				
-				this.fetchSortedPageWithSearchEntity = function(	
+				this.fetchSortedPageWithSearchEntity = function(
 						entity,
 						projection,
 						searchEntity,
 						args,
 						$scope,
-						onSuccess,onError){
+						onSuccess,
+						onError){
 
 						var fd = new FormData();
 						var that = this;
@@ -133,8 +134,35 @@
 						$http
 							.get(url,this.configContentUndefined())
 							.then(onSuccess,onError);
-				}
-				
+				}*/
+
+				this.fetchSortedPage = function(
+                    entity,
+                    searchEntity,
+                    args,
+                    $scope,
+                    onSuccess,
+                    onError){
+
+                    var url = baseUrl + entity;
+                    if (searchEntity){
+                        url+='/search/';
+                        url+=searchEntity;
+                    }
+                    for (var i=0;i<args.length;i++){
+                        if (i==0) url+='?';
+                        for(var prop in args[i]){
+                            url+=(prop+'='+args[i][prop]);
+                        }
+                        if (i+1!=args.length)url+='&';
+                    }
+
+                    $http
+                        .get(url,this.configContentUndefined())
+                        .then(onSuccess,onError);
+                }
+
+
 				this.getAll = function(entity,$scope,onSuccess,onError){
 			
 					var url = baseUrl;

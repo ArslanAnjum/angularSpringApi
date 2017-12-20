@@ -37,7 +37,7 @@
 		var apiWrapper = function($scope){
 			this.$scope = $scope;
 			this.defaultProjection = 'detail';
-			this.searchParams = new Map();
+			this.searchParams = [];
 		}
 		
 		apiWrapper.prototype.setScope = function(scope){
@@ -53,10 +53,9 @@
 			this.searchEntity = searchEntity;
 		}
 		apiWrapper.prototype.setSearchParams = function (searchParam, searchParamValue){
-			this.searchParams.set(searchParam,searchParamValue);
-		}
-		apiWrapper.prototype.addMoreSearchParams = function(searchParam, searchParamValue){
-			this.searchParams.set(searchParam,searchParamValue);
+		    var obj = {};
+		    obj[searchParam] = searchParamValue;
+			this.searchParams.push(obj);
 		}
 		apiWrapper.prototype.setProjection = function (projection){
 			this.defaultProjection = projection;
@@ -150,100 +149,60 @@
 		
 		apiWrapper.prototype.fetchSortedPage = function(entityName,callBack){
 			var that=this;
-			
-			var args = new Map();
-			if (this.isValid(this.page))
-				args.set('page',that.page);
-			if (this.isValid(this.size))
-				args.set('size',that.size);
-			if (this.isValid(this.sort) && this.isValid(this.order))
-				args.set('sort',that.sort + ',' + that.order);
-			
-			if(this.searchParams.size > 0){
-				for (var [key,value] of this.searchParams){
-					args.set(key,value);
-				}
-			}
-			
-			if (that.searchEntity !== null && that.searchEntity !== undefined){
-				api.fetchSortedPageWithSearchEntity
-				(entityName,
-				 that.defaultProjection,
-				 that.searchEntity,
-				 args,
-				 that.$scope,
-				 function(response){
-					response = response.data;
-					if (that.variableName !== null && that.variableName !== undefined && that.variableName !== ''){
-						that.$scope[that.variableName] = response._embedded[entityName];
-					}else{
-						that.$scope[entityName] = response._embedded[entityName];
-					}
-					
-					if (!that.isValid(response._embedded[entityName])){
-						that.toast("None Found");
-						return;
-					}
-					if (response._embedded[entityName].length > 0
-							&& response._embedded[entityName][0].tomorrow){
-						
-						var date = new Date(response._embedded[entityName][0].tomorrow);
-						
-						that.maxYear = date.getFullYear();
-						that.maxMonth = date.getMonth();
-						that.maxDay = date.getDate();
-					}
-					that.totalPages = response.page.totalPages;
-					that.hasNext = (response._links.next != null);
-					that.hasPrevious = (response._links.prev != null);
-					that.applyMaterialSelect();
-					that.applyInitDatePicker();
-					
-					if (that.isValid(callBack))
-						callBack(response,that.$scope);
-				});
-			}else{
-				api.fetchSortedPage
-				(entityName,
-				 that.defaultProjection,
-				 that.page,
-				 that.size,
-				 that.sort,
-				 that.order,
-				 that.$scope,
-				 function(response){
-					response = response.data;
-					if (that.variableName !== null && that.variableName !== undefined && that.variableName !== ''){
-						that.$scope[that.variableName] = response._embedded[entityName];
-					}else{
-						that.$scope[entityName] = response._embedded[entityName];
-					}
-					
-					if (!that.isValid(response._embedded[entityName])){
-						that.toast("None Found");
-						return;
-					}
-					
-					if (response._embedded[entityName].length > 0
-							&& response._embedded[entityName][0].tomorrow){
-						
-						var date = new Date(response._embedded[entityName][0].tomorrow);
-						
-						that.maxYear = date.getFullYear();
-						that.maxMonth = date.getMonth();
-						that.maxDay = date.getDate();
-					}
-					
-					that.totalPages = response.page.totalPages;
-					that.hasNext = (response._links.next != null);
-					that.hasPrevious = (response._links.prev != null);
-					that.applyMaterialSelect();
-					that.applyInitDatePicker();
-					
-					if (that.isValid(callBack))
-						callBack(response,that.$scope);
-				});
-			}
+
+			var args = [];
+			args.push({'projection':this.defaultProjection});
+
+            if (this.isValid(this.page))
+                args.push({'page':that.page});
+            if (this.isValid(this.size))
+                args.push({'size':that.size});
+            if (this.isValid(this.sort) && this.isValid(this.order))
+                args.push({'sort':that.sort + ',' + that.order});
+
+            for (var i=0;i<this.searchParams.length;i++){
+                args.push(this.searchParams[i]);
+            }
+
+            api.fetchSortedPage(
+                entityName,
+                that.searchEntity,
+                args,
+                that.$scope,
+                function(response){
+                   response = response.data;
+                   if (that.variableName !== null && that.variableName !== undefined && that.variableName !== ''){
+                       that.$scope[that.variableName] = response._embedded[entityName];
+                   }else{
+                       that.$scope[entityName] = response._embedded[entityName];
+                   }
+
+                   if (!that.isValid(response._embedded[entityName])){
+                       that.toast("None Found");
+                       return;
+                   }
+                   if (response._embedded[entityName].length > 0
+                           && response._embedded[entityName][0].tomorrow){
+
+                       var date = new Date(response._embedded[entityName][0].tomorrow);
+
+                       that.maxYear = date.getFullYear();
+                       that.maxMonth = date.getMonth();
+                       that.maxDay = date.getDate();
+                   }
+                   that.totalPages = response.page.totalPages;
+                   that.hasNext = (response._links.next != null);
+                   that.hasPrevious = (response._links.prev != null);
+                   that.applyMaterialSelect();
+                   that.applyInitDatePicker();
+
+                   if (that.isValid(callBack))
+                       callBack(response,that.$scope);
+               },
+               function(response){
+                    console.log(response);
+               }
+            );
 		}
 		
 		apiWrapper.prototype.fetchNextPage = function(entity,callBack){

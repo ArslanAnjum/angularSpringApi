@@ -390,17 +390,17 @@
 					if (this.metadata[name].fetch && this.metadata[name].iType == 'dropdown'){
 						var id = this.$scope[this.searchTerms][name];
 						id = this.getIdFromHref(id);
-						this.apiWrapper.addMoreSearchParams("val",id);
+						this.apiWrapper.setSearchParams("val",id);
 					}else if (this.metadata[name].fetch && this.metadata[name].iType == 'searchable-dropdown'){
 						var id = this.$scope[this.searchTerms][name].href;
 						id = this.getIdFromHref(id);
-						this.apiWrapper.addMoreSearchParams("val",id);
+						this.apiWrapper.setSearchParams("val",id);
 					}else if (this.metadata[name].fetch && this.metadata[name].iType == 'multiselect-dropdown'){
 						var id = this.$scope[this.searchTerms][name];
 						id = this.getIdFromHref(id);
-						this.apiWrapper.addMoreSearchParams("val",id);
+						this.apiWrapper.setSearchParams("val",id);
 					}else{
-						this.apiWrapper.addMoreSearchParams("val",this.$scope[this.searchTerms][name]);
+						this.apiWrapper.setSearchParams("val",this.$scope[this.searchTerms][name]);
 					}
 					this.apiWrapper.configPagination(0,this.pageSize,this.singularEntity + "Id","desc");
 					this.apiWrapper.fetchSortedPage(this.entity);
