@@ -1,5 +1,6 @@
 package com.arslan.angularSpringApi.module.person.model;
 
+import com.querydsl.core.annotations.QueryEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.persistence.*;
  * Created by user on 12/8/2017.
  */
 
+@QueryEntity
 @Entity
 @Table(name="book",schema="public")
 @Data

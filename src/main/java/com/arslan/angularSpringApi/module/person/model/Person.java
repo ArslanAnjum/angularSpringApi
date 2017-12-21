@@ -6,8 +6,10 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.querydsl.core.annotations.QueryEntity;
 import lombok.Data;
 
+@QueryEntity
 @Entity
 @Table(name="person",schema="public")
 public @Data class Person {

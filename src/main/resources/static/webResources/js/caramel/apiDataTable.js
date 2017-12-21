@@ -11,7 +11,6 @@
 		var name;
 		var entity;
 		var	singularEntity;
-		var apiWrapper;
 		var parentDiv;
 		var metadata;
 		var headings;
@@ -65,8 +64,11 @@
 			}
 			
 			if (!$scope[entity]){
-				this.apiWrapper.configPagination(0,this.pageSize,this.singularEntity + "Id","desc");
-				this.apiWrapper.fetchSortedPage(entity);
+				this
+				    .apiWrapper
+				    .configPagination(0,this.pageSize,this.singularEntity + "Id","desc")
+				    .setEntityName(entity)
+				    .fetchSortedPage();
 			}
 			this.buildDataTable();
 			this.buildPaginator();
@@ -100,8 +102,6 @@
 			
 			this.$scope[this.parentDiv] = content;
 			this.apiWrapper.getProfile(
-					this.
-					entity,
 					function(response){
 						var descriptors = response.data.alps.descriptors;
 						for (var i=0;i<descriptors.length;i++){
@@ -380,30 +380,36 @@
 			if (name != null && name != undefined){
 				if (fetchAll){
 					this.$scope[this.searchTerms][name] = null;
-					this.apiWrapper = new apiWrapper(this.$scope);
-					this.apiWrapper.configPagination(0,this.pageSize,this.singularEntity + "Id","desc");
-					this.apiWrapper.fetchSortedPage(this.entity);
+					this
+					    .apiWrapper
+					    .resetSearchParams()
+					    .resetSearchEntity()
+					    .resetPage()
+					    .fetchSortedPage();
 				}else{
-					this.apiWrapper = new apiWrapper(this.$scope);
-					this.apiWrapper.setSearchEntity("partial");
-					this.apiWrapper.setSearchParams("prop",name);
-					if (this.metadata[name].fetch && this.metadata[name].iType == 'dropdown'){
-						var id = this.$scope[this.searchTerms][name];
-						id = this.getIdFromHref(id);
-						this.apiWrapper.setSearchParams("val",id);
-					}else if (this.metadata[name].fetch && this.metadata[name].iType == 'searchable-dropdown'){
-						var id = this.$scope[this.searchTerms][name].href;
-						id = this.getIdFromHref(id);
-						this.apiWrapper.setSearchParams("val",id);
-					}else if (this.metadata[name].fetch && this.metadata[name].iType == 'multiselect-dropdown'){
-						var id = this.$scope[this.searchTerms][name];
-						id = this.getIdFromHref(id);
-						this.apiWrapper.setSearchParams("val",id);
-					}else{
-						this.apiWrapper.setSearchParams("val",this.$scope[this.searchTerms][name]);
-					}
-					this.apiWrapper.configPagination(0,this.pageSize,this.singularEntity + "Id","desc");
-					this.apiWrapper.fetchSortedPage(this.entity);
+					this
+                        .apiWrapper
+                        .resetSearchParams()
+                        .resetSearchEntity()
+                        .resetPage();
+
+                    var id = null;
+                    if (this.metadata[name].fetch && this.metadata[name].iType == 'dropdown'){
+                        id = this.$scope[this.searchTerms][name];
+                        id = this.getIdFromHref(id);
+                    }else if (this.metadata[name].fetch && this.metadata[name].iType == 'searchable-dropdown'){
+                        id = this.$scope[this.searchTerms][name].href;
+                        id = this.getIdFromHref(id);
+                    }else if (this.metadata[name].fetch && this.metadata[name].iType == 'multiselect-dropdown'){
+                        id = this.$scope[this.searchTerms][name];
+                        id = this.getIdFromHref(id);
+                    }else{
+                        id = this.$scope[this.searchTerms][name];
+                    }
+                    this
+                        .apiWrapper
+                        .setSearchParams(name,id)
+                        .fetchSortedPage();
 				}
 			}
 		};
@@ -468,20 +474,20 @@
 				"		<div class=\"container center-align\">\n"+
 				"			<ul class=\"pagination\">\n"+
 				"				<li class=\"waves-effect\"><i\n"+
-				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.fetchPreviousPage('"+this.entity+"')\">chevron_left</i></a></li>\n"+
+				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.fetchPreviousPage()\">chevron_left</i></a></li>\n"+
 				"					\n"+
 				"				<li class=\"waves-effect\"><i\n"+
-				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.firstPage('"+this.entity+"')\">first_page</i></a></li>\n"+
+				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.firstPage()\">first_page</i></a></li>\n"+
 				"				\n"+
 				"				<li><label class=\"center-align\"\n"+
 				"					style=\"margin: 0.1rem 0 1.0rem; width: 350px;\"\n"+
 				"					>{{"+this.name+".apiWrapper.page + 1}} out of {{"+this.name+".apiWrapper.totalPages}}</label></li>\n"+
 				"				\n"+
 				"				<li class=\"waves-effect\"><i\n"+
-				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.lastPage('"+this.entity+"')\">last_page</i></a></li>	\n"+
+				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.lastPage()\">last_page</i></a></li>	\n"+
 				"				\n"+
 				"				<li class=\"waves-effect\"><i\n"+
-				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.fetchNextPage('"+this.entity+"')\">chevron_right</i></a></li>\n"+
+				"					class=\"material-icons\" ng-click=\""+this.name+".apiWrapper.fetchNextPage()\">chevron_right</i></a></li>\n"+
 				"			</ul>\n"+
 				"		</div>\n"+
 				"	</div>\n"+
@@ -593,8 +599,6 @@
 
 			this.$scope[this.editModalBody] = content;
 			this.apiWrapper.getProfile(
-					this.
-					entity,
 					function(response){
 					var descriptors = response.data.alps.descriptors;
 					for (var i=0;i<descriptors.length;i++){
@@ -784,24 +788,26 @@
 			}
 			else{
 				var apiSearchable = new apiWrapper(this.$scope);
-				apiSearchable.configPagination(0,100);
-				apiSearchable.setSearchEntity(this.getFindByString(searchable));
-				apiSearchable.setSearchParams(searchable,this.$scope[this.editEntity][prop][searchable]);
-				apiSearchable.fetchSortedPage(entity,function(){
-					for (var i=0;i<that.$scope[that.inputs].length;i++){
-						if (that.$scope[that.inputs][i].id == prop){
-							that.$scope[that.inputs][i].showSearchedData = true;
-						}
-					}
-				});
+				apiSearchable
+				    .configPagination(0,100)
+				    .setSearchEntity(this.getFindByString(searchable))
+				    .setSearchParams(searchable,this.$scope[this.editEntity][prop][searchable])
+				    .setEntityName(entity)
+				    .fetchSortedPage(
+				        function(){
+					    for (var i=0;i<that.$scope[that.inputs].length;i++){
+						    if (that.$scope[that.inputs][i].id == prop){
+						    	that.$scope[that.inputs][i].showSearchedData = true;
+						    }
+					    }
+				    }
+                );
 			}
 		}
 		apiDataTable.prototype.setSearchableData = function(prop,searchable,entity,obj){
 			
 			var that = this;
 			if (obj){
-
-				/*this.$scope[this.editEntity][prop].href=obj._links.self.href;*/
 				this.$scope[this.editEntity][prop].href=this.resolveHref(obj,prop,{fetch:entity});
 				this.$scope[this.editEntity][prop][searchable] = obj[searchable];
 				for (var i=0;i<that.$scope[that.inputs].length;i++){
@@ -832,7 +838,6 @@
 					var matchFound = false;
 					for (var i=0;i<lst.length;i++){
 						if (this.$scope[this.editEntity][prop][searchable] == lst[i][searchable]){
-							/*this.$scope[this.editEntity][prop].href = lst[i]._links.self.href;*/
 							this.$scope[this.editEntity][prop].href = this.resolveHref(lst[i],prop,{fetch:entity});
 							matchFound = true;
 							break;
@@ -868,23 +873,26 @@
 			}
 			else{
 				var apiSearchable = new apiWrapper(this.$scope);
-				apiSearchable.configPagination(0,100);
-				apiSearchable.setSearchEntity(this.getFindByString(searchable));
-				apiSearchable.setSearchParams(searchable,this.$scope[this.searchTerms][prop][searchable]);
-				apiSearchable.fetchSortedPage(entity,function(){
-					for (var i=0;i<that.$scope[that.headings].length;i++){
-						if (that.$scope[that.headings][i].id == prop){
-							that.$scope[that.headings][i].showSearchedData = true;
-						}
-					}
-				});
+				apiSearchable
+				    .configPagination(0,100)
+				    .setSearchEntity(this.getFindByString(searchable))
+				    .setSearchParams(searchable,this.$scope[this.searchTerms][prop][searchable])
+				    .setEntityName(entity)
+				    .fetchSortedPage(
+				    function(){
+					    for (var i=0;i<that.$scope[that.headings].length;i++){
+						    if (that.$scope[that.headings][i].id == prop){
+							    that.$scope[that.headings][i].showSearchedData = true;
+						    }
+					    }
+				    }
+                );
 			}
 		}
 		apiDataTable.prototype.setSearchSearchableData = function(prop,searchable,entity,obj){
 			
 			var that = this;
 			if (obj){
-				//this.$scope[this.searchTerms][prop].href=obj._links.self.href;
 				this.$scope[this.searchTerms][prop].href=this.resolveHref(obj,prop,{fetch:entity});
 				this.$scope[this.searchTerms][prop][searchable] = obj[searchable];
 				for (var i=0;i<that.$scope[that.headings].length;i++){
@@ -916,7 +924,6 @@
 					var matchFound = false;
 					for (var i=0;i<lst.length;i++){
 						if (this.$scope[this.editEntity][prop][searchable] == lst[i][searchable]){
-							//this.$scope[this.editEntity][prop].href = lst[i]._links.self.href;
 							this.$scope[this.editEntity][prop].href = this.resolveHref(lst[i],prop,{fetch:entity});
 							matchFound = true;
 							break;
@@ -1082,7 +1089,6 @@
 				}
 			}
 			this.apiWrapper.update(
-					this.entity,
 					this.$scope[this.editEntity],
 					that.$scope,
 					function(response){

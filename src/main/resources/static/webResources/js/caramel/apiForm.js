@@ -34,6 +34,7 @@
 			this.name = entity+'Create';
 			this.entity = entity;
 			this.apiWrapper = new apiWrapper($scope);
+			this.apiWrapper.setEntityName(entity);
 			this.parentDiv = this.name + "Div";
 			this.form = this.name + "Form";
 			this.inputs = this.name + "Inputs";
@@ -88,8 +89,6 @@
 
 			this.$scope[this.parentDiv] = content;
 			this.apiWrapper.getProfile(
-					this.
-					entity,
 					function(response){
 						var descriptors = response.data.alps.descriptors;
 						for (var i=0;i<descriptors.length;i++){
@@ -286,23 +285,26 @@
 			}
 			else{
 				var apiSearchable = new apiWrapper(this.$scope);
-				apiSearchable.configPagination(0,100);
-				apiSearchable.setSearchEntity(this.getFindByString(searchable));
-				apiSearchable.setSearchParams(searchable,this.$scope[this.newObj][prop][searchable]);
-				apiSearchable.fetchSortedPage(entity,function(){
-					for (var i=0;i<that.$scope[that.inputs].length;i++){
-						if (that.$scope[that.inputs][i].id == prop){
-							that.$scope[that.inputs][i].showSearchedData = true;
-						}
-					}
-				});
+				apiSearchable
+				    .configPagination(0,100)
+				    .setSearchEntity(this.getFindByString(searchable))
+				    .setSearchParams(searchable,this.$scope[this.newObj][prop][searchable])
+				    .setEntityName(entity)
+				    .fetchSortedPage(
+				        function(){
+					    for (var i=0;i<that.$scope[that.inputs].length;i++){
+					    	if (that.$scope[that.inputs][i].id == prop){
+					    		that.$scope[that.inputs][i].showSearchedData = true;
+					    	}
+					    }
+				    }
+                );
 			}
 		}
 		apiForm.prototype.setSearchableData = function(prop,searchable,entity,obj){
 			
 			var that = this;
 			if (obj){
-				/*this.$scope[this.newObj][prop].href=obj._links.self.href;*/
 				this.$scope[this.newObj][prop].href=this.resolveHref(obj,prop,{fetch:entity});
 				this.$scope[this.newObj][prop][searchable] = obj[searchable];
 				for (var i=0;i<that.$scope[that.inputs].length;i++){
@@ -333,7 +335,6 @@
 					var matchFound = false;
 					for (var i=0;i<lst.length;i++){
 						if (this.$scope[this.newObj][prop][searchable] == lst[i][searchable]){
-							//this.$scope[this.newObj][prop].href = lst[i]._links.self.href;
 							this.$scope[this.newObj][prop].href = this.resolveHref(lst[i],prop,{fetch:entity});
 							matchFound = true;
 							break;
@@ -490,7 +491,7 @@
 				}
 			}
 			
-			this.apiWrapper.create(this.entity,this.$scope[this.newObj],this.$scope,
+			this.apiWrapper.create(this.$scope[this.newObj],this.$scope,
 					function(response){
 						that.toast("Created");
 						for (var prop in that.$scope[that.newObj])
