@@ -38,6 +38,18 @@
 			this.order=order;
 			return this;
 		}
+		/*
+		    Configures apiWrapper for fetching reference data
+		    page=0;size=200;sort=entityId;order=asc
+		*/
+		apiWrapper.prototype.configForReferenceData = function(collection){
+		    this.page=0;
+		    this.size=200;
+		    this.sort=this.getSingular(collection) + 'Id';
+		    this.order='asc';
+		    this.entityName = collection;
+		    return this;
+		}
 		apiWrapper.prototype.setSearchEntity = function(searchEntity){
 			this.searchEntity = searchEntity;
 			return this;
@@ -260,6 +272,20 @@
 					}
 				)
 		}
+
+		apiWrapper.prototype.getSingular = function (entity){
+            var iesIndex = entity.lastIndexOf('ies');
+            var esIndex = entity.lastIndexOf('es');
+            var length = entity.length;
+
+            if (iesIndex != -1 && iesIndex + 3 == length){
+                return entity.substring(0,iesIndex) + 'y';
+            }else if (esIndex != -1 && iesIndex + 2 == length){
+                return entity.substring(0,esIndex);
+            }else{
+                return entity.substring(0,entity.length-1);
+            }
+        }
 
 		return apiWrapper;
 }]);
