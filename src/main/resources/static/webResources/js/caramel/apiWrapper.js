@@ -70,6 +70,7 @@
 		}
 		apiWrapper.prototype.setVariableName = function(variableName){
 		    this.variableName = variableName;
+		    return this;
 		}
 		apiWrapper.prototype.setSearchEntity = function(searchEntity){
 			this.searchEntity = searchEntity;
