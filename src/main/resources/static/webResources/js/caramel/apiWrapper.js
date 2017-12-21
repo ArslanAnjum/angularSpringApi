@@ -42,7 +42,7 @@
 		    Configures apiWrapper for fetching reference data
 		    page=0;size=200;sort=entityId;order=asc
 		*/
-		apiWrapper.prototype.configForReferenceData = function(collection){
+		apiWrapper.prototype.configFor200Records = function(collection){
 		    this.page=0;
 		    this.size=200;
 		    this.sort=this.getSingular(collection) + 'Id';
