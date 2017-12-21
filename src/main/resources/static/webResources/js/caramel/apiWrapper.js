@@ -83,7 +83,7 @@
 			return this;
 		}
 		apiWrapper.prototype.withSearchParams = function (searchParams){
-		    this.searchParams = searchParams;
+		    this.searchParams = angular.copy(searchParams);
 		    return this;
 		}
 		apiWrapper.prototype.resetSearchParams = function(){
