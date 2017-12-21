@@ -20,7 +20,8 @@
 		var totalPages;
 		var hasNext;
 		var hasPrevious;
-		
+		var doNotUseProjection;
+
 		var entityName;
 		var searchEntity;
 		var searchParams;
@@ -61,6 +62,10 @@
             this.order='asc';
             this.entityName = collection;
             return this;
+		}
+		apiWrapper.prototype.withNoProjection = function(){
+		    this.doNotUseProjection = true;
+		    return this;
 		}
 		apiWrapper.prototype.setSearchEntity = function(searchEntity){
 			this.searchEntity = searchEntity;
@@ -154,8 +159,9 @@
 			var that=this;
 
 			var args = [];
-			args.push({'projection':this.projection});
 
+			if (!this.doNotUseProjection)
+			    args.push({'projection':this.projection});
             if (this.isValid(this.page))
                 args.push({'page':that.page});
             if (this.isValid(this.size))
