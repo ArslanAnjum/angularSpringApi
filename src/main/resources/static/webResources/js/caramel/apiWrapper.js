@@ -50,6 +50,18 @@
 		    this.entityName = collection;
 		    return this;
 		}
+		/*
+		    Configures apiWrapper for fetching data with following params
+            page=0;size=20;sort=entityId;order=asc
+		*/
+		apiWrapper.prototype.configFor20Records = function(collection){
+		    this.page=0;
+            this.size=20;
+            this.sort=this.getSingular(collection) + 'Id';
+            this.order='asc';
+            this.entityName = collection;
+            return this;
+		}
 		apiWrapper.prototype.setSearchEntity = function(searchEntity){
 			this.searchEntity = searchEntity;
 			return this;
