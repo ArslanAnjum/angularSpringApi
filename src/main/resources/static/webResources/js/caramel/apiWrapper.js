@@ -25,6 +25,7 @@
 		var entityName;
 		var searchEntity;
 		var searchParams;
+		var variableName;
 		
 		var apiWrapper = function($scope){
 			this.$scope = $scope;
@@ -66,6 +67,9 @@
 		apiWrapper.prototype.withNoProjection = function(){
 		    this.doNotUseProjection = true;
 		    return this;
+		}
+		apiWrapper.prototype.setVariableName = function(variableName){
+		    this.variableName = variableName;
 		}
 		apiWrapper.prototype.setSearchEntity = function(searchEntity){
 			this.searchEntity = searchEntity;
@@ -184,7 +188,10 @@
                        that.toast("None Found");
                        if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope);
                    }else{
-                       that.$scope[that.entityName] = response._embedded[that.entityName];
+                       if (that.isValid(that.variableName))
+                            that.$scope[that.variableName] = response._embedded[that.entityName];
+                       else
+                            that.$scope[that.entityName] = response._embedded[that.entityName];
                        if (that.isValid(onSuccess)) onSuccess(response,that.$scope);
                    }
 
