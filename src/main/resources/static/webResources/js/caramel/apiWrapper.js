@@ -82,6 +82,10 @@
 			this.searchParams.push(obj);
 			return this;
 		}
+		apiWrapper.prototype.withSearchParams = function (searchParams){
+		    this.searchParams = searchParams;
+		    return this;
+		}
 		apiWrapper.prototype.resetSearchParams = function(){
 		    this.searchParams = [];
 		    return this;
