@@ -194,15 +194,15 @@
                 that.$scope,
                 function(response){
                    response = response.data;
+                   var noneFound = false;
                    if (!that.isValid(response._embedded[that.entityName])){
                        that.toast("None Found");
-                       if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope,that);
+                       noneFound = true;
                    }else{
                        if (that.isValid(that.variableName))
                             that.$scope[that.variableName] = response._embedded[that.entityName];
                        else
                             that.$scope[that.entityName] = response._embedded[that.entityName];
-                       if (that.isValid(onSuccess)) onSuccess(response,that.$scope,that);
                    }
 
                    that.totalPages = response.page.totalPages;
@@ -211,6 +211,12 @@
                    that.hasPrevious = (response._links.prev != null);
                    that.applyMaterialSelect();
                    that.applyInitDatePicker();
+
+                   if (noneFound){
+                        if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope,that);
+                   }else{
+                        if (that.isValid(onSuccess)) onSuccess(response,that.$scope,that);
+                   }
                },
                function(error){
                    that.totalPages = null;
