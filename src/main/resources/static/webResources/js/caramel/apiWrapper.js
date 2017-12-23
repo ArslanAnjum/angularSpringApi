@@ -195,13 +195,13 @@
                    response = response.data;
                    if (!that.isValid(response._embedded[that.entityName])){
                        that.toast("None Found");
-                       if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope);
+                       if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope,that);
                    }else{
                        if (that.isValid(that.variableName))
                             that.$scope[that.variableName] = response._embedded[that.entityName];
                        else
                             that.$scope[that.entityName] = response._embedded[that.entityName];
-                       if (that.isValid(onSuccess)) onSuccess(response,that.$scope);
+                       if (that.isValid(onSuccess)) onSuccess(response,that.$scope,that);
                    }
 
                    that.totalPages = response.page.totalPages;
@@ -216,7 +216,7 @@
                    that.hasPrevious = null
                    that.applyMaterialSelect();
                    that.applyInitDatePicker();
-                   if (that.isValid(onError)) onError(error,$scope);
+                   if (that.isValid(onError)) onError(error,$scope,that);
                }
             );
 		}
@@ -251,7 +251,7 @@
 
             api.getProfile(
                     that.entityName,
-                    function(response){onSuccess(response)},
+                    function(response){onSuccess(response,that.$scope,that)},
                     function(error){onError(error)}
                     );
         }
