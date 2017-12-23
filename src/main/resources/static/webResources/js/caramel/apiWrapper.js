@@ -64,6 +64,10 @@
             this.entityName = collection;
             return this;
 		}
+		apiWrapper.prototype.withOrder = function(order){
+		    this.order = order;
+		    return this;
+		}
 		apiWrapper.prototype.withNoProjection = function(){
 		    this.doNotUseProjection = true;
 		    return this;
