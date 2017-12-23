@@ -18,6 +18,7 @@
 		var sort;
 		var order;
 		var totalPages;
+		var totalElements;
 		var hasNext;
 		var hasPrevious;
 		var doNotUseProjection;
@@ -205,6 +206,7 @@
                    }
 
                    that.totalPages = response.page.totalPages;
+                   that.totalElements = response.page.totalElements;
                    that.hasNext = (response._links.next != null);
                    that.hasPrevious = (response._links.prev != null);
                    that.applyMaterialSelect();
@@ -212,6 +214,7 @@
                },
                function(error){
                    that.totalPages = null;
+                   that.totalElements = null;
                    that.hasNext = null;
                    that.hasPrevious = null
                    that.applyMaterialSelect();
