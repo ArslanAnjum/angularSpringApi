@@ -138,8 +138,13 @@
 								var heading = that.$scope[that.headings][cIndex];
 								
 								if (metadata.iType == 'input'){
-									obj['content'] = 
-										"<p ng-bind=\""+that.singularEntity+"[td.name]\"></p>\n";
+								    if (metadata.type && metadata.type == 'date'){
+								        "<p ng-bind=\""+that.singularEntity+"[td.name] | date : 'dd.MM.yyyy'\"></p>\n";
+								    }else{
+								        obj['content'] =
+                                            "<p ng-bind=\""+that.singularEntity+"[td.name]\"></p>\n";
+								    }
+
 									if (!that.$scope.bOptions)
 										that.$scope.bOptions = [true,false];
 									
