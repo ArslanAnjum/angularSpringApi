@@ -140,7 +140,7 @@
 								if (metadata.iType == 'input'){
 								    if (metadata.type && metadata.type == 'date'){
 								        obj['content'] =
-								            "<p ng-bind=\""+that.singularEntity+"[td.name] | date : 'dd.MM.yyyy'\"></p>\n";
+								            "<p ng-bind=\""+that.singularEntity+"[td.name] | date : 'dd/MM/yyyy'\"></p>\n";
 								    }else{
 								        obj['content'] =
                                             "<p ng-bind=\""+that.singularEntity+"[td.name]\"></p>\n";
