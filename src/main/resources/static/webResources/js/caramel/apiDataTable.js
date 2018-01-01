@@ -432,6 +432,9 @@
 			console.log(obj);
 
 			for (var prop in this.metadata){
+			    if (this.metadata[prop].type == 'date'){
+			        obj[prop] = new Date(obj[prop]);
+			    }
 				if (typeof(obj[prop]) == 'object'){
 					if (this.metadata[prop].iType == 'dropdown'){
 						try{
