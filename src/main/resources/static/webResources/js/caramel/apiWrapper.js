@@ -133,7 +133,8 @@
 		apiWrapper.prototype.isValid = function(argument){
 			if (	argument === undefined || 
 					argument === null ||
-					argument === ''){
+					argument === '' ||
+					argument.length === 0){
 				return false;
 			}
 			else 
