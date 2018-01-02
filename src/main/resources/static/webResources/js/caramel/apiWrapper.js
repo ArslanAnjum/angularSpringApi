@@ -209,22 +209,27 @@
                    response = response.data;
                    var noneFound = false;
                    if (!that.isValid(response._embedded[that.entityName])){
-                       if (!isItAPassiveApi)
+                       if (!isItAPassiveApi){
                             that.toast("None Found");
+                        }
                        noneFound = true;
                    }else{
-                       if (that.isValid(that.variableName))
-                            that.$scope[that.variableName] = response._embedded[that.entityName];
-                       else
-                            that.$scope[that.entityName] = response._embedded[that.entityName];
+                       if (!isItAPassiveApi){
+                           if (that.isValid(that.variableName))
+                                that.$scope[that.variableName] = response._embedded[that.entityName];
+                           else
+                                that.$scope[that.entityName] = response._embedded[that.entityName];
+                       }
                    }
 
-                   that.totalPages = response.page.totalPages;
-                   that.totalElements = response.page.totalElements;
-                   that.hasNext = (response._links.next != null);
-                   that.hasPrevious = (response._links.prev != null);
-                   that.applyMaterialSelect();
-                   that.applyInitDatePicker();
+                   if (!isItAPassiveApi){
+                       that.totalPages = response.page.totalPages;
+                       that.totalElements = response.page.totalElements;
+                       that.hasNext = (response._links.next != null);
+                       that.hasPrevious = (response._links.prev != null);
+                       that.applyMaterialSelect();
+                       that.applyInitDatePicker();
+                   }
 
                    if (noneFound){
                         if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope,that);
@@ -233,12 +238,14 @@
                    }
                },
                function(error){
-                   that.totalPages = null;
-                   that.totalElements = null;
-                   that.hasNext = null;
-                   that.hasPrevious = null
-                   that.applyMaterialSelect();
-                   that.applyInitDatePicker();
+                   if (!isItAPassiveApi){
+                       that.totalPages = null;
+                       that.totalElements = null;
+                       that.hasNext = null;
+                       that.hasPrevious = null
+                       that.applyMaterialSelect();
+                       that.applyInitDatePicker();
+                   }
                    if (that.isValid(onError)) onError(error,$scope,that);
                }
             );
