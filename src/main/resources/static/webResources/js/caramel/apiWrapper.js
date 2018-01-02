@@ -209,12 +209,12 @@
                    response = response.data;
                    var noneFound = false;
                    if (!that.isValid(response._embedded[that.entityName])){
-                       if (!isItAPassiveApi){
+                       if (!that.isItAPassiveApi){
                             that.toast("None Found");
                         }
                        noneFound = true;
                    }else{
-                       if (!isItAPassiveApi){
+                       if (!that.isItAPassiveApi){
                            if (that.isValid(that.variableName))
                                 that.$scope[that.variableName] = response._embedded[that.entityName];
                            else
@@ -222,7 +222,7 @@
                        }
                    }
 
-                   if (!isItAPassiveApi){
+                   if (!that.isItAPassiveApi){
                        that.totalPages = response.page.totalPages;
                        that.totalElements = response.page.totalElements;
                        that.hasNext = (response._links.next != null);
@@ -238,7 +238,7 @@
                    }
                },
                function(error){
-                   if (!isItAPassiveApi){
+                   if (!that.isItAPassiveApi){
                        that.totalPages = null;
                        that.totalElements = null;
                        that.hasNext = null;
