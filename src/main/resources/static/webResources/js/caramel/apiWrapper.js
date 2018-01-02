@@ -23,6 +23,13 @@
 		var hasPrevious;
 		var doNotUseProjection;
 
+		/*
+		    Passive api means:
+		        1- None Found wont be toasted
+		        2- Received Data wont be set on a $scope variable
+		*/
+		var isItAPassiveApi;
+
 		var entityName;
 		var searchEntity;
 		var searchParams;
@@ -53,6 +60,7 @@
 		    this.entityName = collection;
 		    return this;
 		}
+
 		/*
 		    Configures apiWrapper for fetching data with following params
             page=0;size=20;sort=entityId;order=asc
@@ -67,6 +75,10 @@
 		}
 		apiWrapper.prototype.withOrder = function(order){
 		    this.order = order;
+		    return this;
+		}
+		apiWrapper.prototype.passiveApi = function(){
+		    this.isItAPassiveApi = true;
 		    return this;
 		}
 		apiWrapper.prototype.withNoProjection = function(){
@@ -197,7 +209,8 @@
                    response = response.data;
                    var noneFound = false;
                    if (!that.isValid(response._embedded[that.entityName])){
-                       that.toast("None Found");
+                       if (!isItAPassiveApi)
+                            that.toast("None Found");
                        noneFound = true;
                    }else{
                        if (that.isValid(that.variableName))
