@@ -30,6 +30,8 @@
 		*/
 		var isItAPassiveApi;
 
+        var resetOnNoneFound;
+
 		var entityName;
 		var searchEntity;
 		var searchParams;
@@ -79,6 +81,10 @@
 		}
 		apiWrapper.prototype.passiveApi = function(){
 		    this.isItAPassiveApi = true;
+		    return this;
+		}
+		apiWrapper.prototype.withResetOnNoneFound = function(){
+		    this.resetOnNoneFound = true;
 		    return this;
 		}
 		apiWrapper.prototype.withNoProjection = function(){
@@ -211,6 +217,12 @@
                    if (!that.isValid(response._embedded[that.entityName])){
                        if (!that.isItAPassiveApi){
                             that.toast("None Found");
+                            if (that.resetOnNoneFound){
+                                if (that.isValid(that.variableName))
+                                    that.$scope[that.variableName] = [];
+                                else
+                                    that.$scope[that.entityName] = [];
+                            }
                         }
                        noneFound = true;
                    }else{
