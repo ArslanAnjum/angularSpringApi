@@ -10,7 +10,7 @@ import org.springframework.data.rest.core.config.Projection;
 public interface PersonDetailProjection {
 
 	Integer getPersonId();
-	String getPersonName();
+	String getPersoncName();
 	String getAddress();
 	String getEmailId();
 	String getPhoneNumber();
