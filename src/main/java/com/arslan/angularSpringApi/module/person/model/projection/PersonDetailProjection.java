@@ -14,9 +14,6 @@ public interface PersonDetailProjection {
 	String getAddress();
 	String getEmailId();
 	String getPhoneNumber();
-	/*CityDetailProjection getCity();
-	IndustryDetailProjection getIndustry();
-	Set<BadgeDetailProjection> getBadges();*/
 	City getCity();
 	Industry getIndustry();
 	Set<Badge> getBadges();
