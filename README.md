@@ -20,13 +20,17 @@ Its an AngularJS library to be used with Spring REST API. This repository also c
 
 #### Prerequisites
 
-1- Spring Rest API base path set to /api/
+1- Spring Rest API base path set to /api/. See [application.properties](src/main/resources/application.properties)
 
-2- All Entities must have PaginatedQueryDslRepository [a relative link](src/main/java/com/arslan/angularSpringApi/module/base/PaginatedQueryDslRepository.java)
+2- For Searching we are using QueryDSL therefore all entities must have their respective so called Q Entity generated and must be therefore annotated with @QueryEntity.
 
-3- All Entities which have referenced objects must have a projection named 'detail'
+3- All Entities must have a repo that extends [PaginatedQueryDslRepository](src/main/java/com/arslan/angularSpringApi/module/base/PaginatedQueryDslRepository.java)
 
-4- Angular Dependencies:
+4- All Entities which have referenced objects must have a projection named 'detail'. This would enable the framework to fetch referenced objects along with main objects. For Example see [PersonDetailProjection](src/main/java/com/arslan/angularSpringApi/module/person/model/projection/PersonDetailProjection.java)
+
+5- Expose Id for all entities. See [CustomRestConfiguration](src/main/java/com/arslan/angularSpringApi/configuration/CustomRestConfiguration.java)
+
+6- Angular Dependencies:
 
     a) angular-bind-html-compile (https://github.com/incuna/angular-bind-html-compile)
 
@@ -34,7 +38,6 @@ With above mentioned prerequisites you can start building CRUD for any entity.
 
 WebContent/views/skeleton.jsp is included in sample project which is used to build CRUD page.
 
-skeleton.jsp is use to build cruds
 
     <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -194,48 +197,8 @@ when iType is dropdown or multiselect-dropdown
     
 when iType is searchable-dropdown
 
-    entity specified by fetch property is fetched with max size equal to 100 on text change of search box
-    A method named findBy[Entity]Name must be defined in the respective repo
-    
-    Example:
-        public interface CityRepo extends PagingAndSortingRepository<City, Integer>{
-
-          @Query("select c from City c where LOWER(c.cityName) like LOWER(concat(:cityName,'%'))")
-          Page findByCityName(
-              @Param("cityName")String cityName,
-              Pageable pageable);
-        }
-
-Using Convertor present in src/com/arslan/angularSpringApi/module/utils following partially generic search method needs to be defined
-in Entity repo which in this case is PersonsRepo.java
-
-    @Query(
-          "select distinct p from Person p join p.badges badges "
-          + "where"
-          + "("
-          + "	(:val is not null) and "
-          + "	("
-          + "		(p.name                 like  :#{@convertor.toString(#val)}% and :prop = 'name')        or "
-          + "		(p.address              like  :#{@convertor.toString(#val)}% and :prop = 'address')     or "
-          + "		(p.emailId              like  :#{@convertor.toString(#val)}% and :prop = 'emailId')     or "
-          + "		(p.phoneNumber          like  :#{@convertor.toString(#val)}% and :prop = 'phoneNumber') or "
-          + "		(p.city.cityId          =     :#{@convertor.toInteger(#val)} and :prop = 'city')        or "
-          + "		(p.industry.industryId  =     :#{@convertor.toInteger(#val)} and :prop = 'industry')    or "
-          + "		(badges.badgeId         =     :#{@convertor.toInteger(#val)} and :prop = 'badges')"
-          + "	)"
-          + ")"
-          )
-      @RestResource(path="partial")
-      Page getSearched(
-          @Param("prop")String prop,
-          @Param("val")String val,
-          Pageable pageable);
-          
-For Strings you need to define like #{@convertor.toString(#val)}
-
-For Integers you need to defined = #{@convertor.toInteger(#val)}
-
-For ManyToMany relationships you need to define a join with that collection and select distinct. Use #{@convertor.toInteger(#val)}
+    entity specified by fetch property is fetched with max size equal to 100 on text change of search box.
+    We assume that we would perform this search on [entity]Name. e.g., if entity is cities we would search for cityName
 
 ## Author
 
