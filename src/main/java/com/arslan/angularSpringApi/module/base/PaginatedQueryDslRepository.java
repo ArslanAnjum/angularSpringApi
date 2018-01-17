@@ -30,7 +30,7 @@ public interface PaginatedQueryDslRepository<T,ID extends Serializable,Q extends
                 .bind(String.class)
                 .first(
                         (StringPath path,String value) -> {
-                            return path.containsIgnoreCase(value);
+                            return path.startsWithIgnoreCase(value);
                         }
                 );
 

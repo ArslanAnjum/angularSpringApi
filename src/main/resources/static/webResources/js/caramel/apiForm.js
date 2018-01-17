@@ -284,14 +284,13 @@
 				return;
 			}
 			else{
-				var apiSearchable = new apiWrapper(this.$scope);
-				apiSearchable
+				var api = new apiWrapper(this.$scope);
+				api
 				    .configPagination(0,100)
-				    .setSearchEntity(this.getFindByString(searchable))
 				    .setSearchParams(searchable,this.$scope[this.newObj][prop][searchable])
 				    .setEntityName(entity)
 				    .fetchSortedPage(
-				        function(){
+				        function(response){
 					    for (var i=0;i<that.$scope[that.inputs].length;i++){
 					    	if (that.$scope[that.inputs][i].id == prop){
 					    		that.$scope[that.inputs][i].showSearchedData = true;
@@ -356,15 +355,7 @@
 				}
 			}
 		}
-		apiForm.prototype.getFindByString = function (str) {
-			  str = 
-				  str
-			    .replace(/^./, function(match) {
-			      return match.toUpperCase();
-			    });
-			  
-			  return "findBy" + str;
-		};
+
 		apiForm.prototype.openAddModal = function(){
 			$('#'+this.name+"ModalAdd").modal('open');
 		}
@@ -402,7 +393,8 @@
             var href = null;
             if (obj[prop + 'Id']){
                var href =
-                    'http://' +
+                    window.location.protocol +
+                    "//"+
                     window.location.host +
                     '/api/' +
                     metadata.fetch +

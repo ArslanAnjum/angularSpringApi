@@ -15,11 +15,5 @@ import com.arslan.angularSpringApi.module.person.model.Industry;
 public interface IndustryRepo
 		extends
 		PaginatedQueryDslRepository<Industry, Integer,QIndustry> {
-	
-	@Query("select i from Industry i where LOWER(i.industryName) like LOWER(concat(:industryName,'%'))")
-	Page findByIndustryName(
-			@Param("industryName")String cityName,
-			Pageable pageable);
-	
 
 }

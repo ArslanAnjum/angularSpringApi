@@ -15,9 +15,4 @@ import com.arslan.angularSpringApi.module.person.model.City;
 public interface CityRepo
 		extends
 		PaginatedQueryDslRepository<City, Integer,QCity> {
-
-	@Query("select c from City c where LOWER(c.cityName) like LOWER(concat(:cityName,'%'))")
-	Page findByCityName(
-			@Param("cityName")String cityName,
-			Pageable pageable);
 }

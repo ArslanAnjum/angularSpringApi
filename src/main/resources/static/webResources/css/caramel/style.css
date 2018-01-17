@@ -1,0 +1,8 @@
+
+.searchable-input > ul{
+    display:none;
+}
+
+.searchable-input:hover > ul{
+    display:block;
+}

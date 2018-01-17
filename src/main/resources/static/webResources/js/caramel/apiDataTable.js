@@ -55,6 +55,7 @@
 			this.editModalBuilt = false;
 			this.singularEntity = this.getSingular(entity);
 			this.apiWrapper = new apiWrapper($scope);
+			this.apiWrapper.withResetOnNoneFound();
 		    this.cols = 3;
 
 			if (defaultPageSize !== null && defaultPageSize !== undefined && defaultPageSize !== 0 ){
@@ -84,12 +85,17 @@
 				"<div class=\"col s12 m12 l12\">\n"+
 				"<table class=\"bordered striped\" style='border:solid;border-color:grey;border-width:1px; margin-top:15px;'>\n"+
 				"	<thead>\n"+
-				"		<th ng-repeat=\"heading in "+this.name+"Headings\">\n"+
+				"		<th ng-repeat=\"heading in "+this.headings+"\"\n"+
+				"           ng-style=\"{width: "+this.name+".getWidth($index,heading)}\">\n"+
 				"			{{heading.name}}\n"+
-				"			<span ng-if=\"heading.content\" class=\"center-align\" bind-html-compile=\"heading.content\"></span>\n"+
 				"		</th>\n"+
 				"	</thead>\n"+
 				"	<tbody>\n"+
+				"       <tr>\n"+
+				"		    <td ng-repeat=\"heading in "+this.headings+"\">\n"+
+                "			    <span ng-if=\"heading.content\" class=\"center-align\" bind-html-compile=\"heading.content\"></span>\n"+
+                "		    </td>\n"+
+                "       </tr>\n"+
 				"		<tr ng-repeat=\""+this.singularEntity+" in "+this.entity+"\">\n"+
 				"			<td><p ng-bind=\""+this.name+".getEntityId("+this.singularEntity+")\"></p></td>\n"+
 				"			<td ng-repeat=\"td in "+this.tds+"\" bind-html-compile=\"td.content\">\n"+
@@ -130,7 +136,13 @@
 								var name = descriptor.name;
 								var label = that.getLabel(name);
 								
-								that.$scope[that.headings].push({id:name,name:label});
+								that.$scope[that.headings].push(
+								    {
+								        id:name,
+								        name:label,
+								        metadata:metadata
+                                    }
+                                );
 								that.$scope[that.tds].push({name:name});
 								var cIndex = that.$scope[that.tds].length - 1;
 								var obj = that.$scope[that.tds][cIndex];
@@ -141,7 +153,20 @@
 								    if (metadata.type && metadata.type == 'date'){
 								        obj['content'] =
 								            "<p ng-bind=\""+that.singularEntity+"[td.name] | date : 'MM/dd/yyyy'\"></p>\n";
-								    }else{
+								    }else if (metadata.type && metadata.type == 'binary'){
+								        obj['content'] =
+								            "<p ng-if=\""+that.singularEntity+"[td.name]\">\n"+
+                                            "	<input\n"+
+                                            "			id=\""+that.name+name+"{{$index}}\"\n"+
+                                            "			type=\"checkbox\"\n"+
+                                            "           ng-disabled='true'\n"+
+                                            "			ng-model=\""+that.singularEntity+"[td.name]\">\n"+
+                                            "	<label\n"+
+                                            "			class=\"active\"\n"+
+                                            "			for=\""+that.name+name+"{{$index}}\"></label>\n"+
+                                            "</p>\n";
+								    }
+								    else{
 								        obj['content'] =
                                             "<p ng-bind=\""+that.singularEntity+"[td.name]\"></p>\n";
 								    }
@@ -153,41 +178,20 @@
 									if (metadata.searchable){
 										if (!metadata.type || metadata.type != 'binary'){
 											heading['content'] =
-												"<a class='dropdown-button' data-activates='"+that.name+name+"SearchUl' id='"+that.name+name+"SearchButton'><i style='position:relative; top:6px;' class=\"material-icons\">keyboard_arrow_down</i></a>\n"+
-												"	<ul id='"+that.name+name+"SearchUl' class='dropdown-content' style='overflow:hidden'>\n"+
-												"		<li>\n"+
-												"			<div style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-												"			<input id=\""+that.name+name+"Search\" \n"+
-												"					type=\"text\" \n"+
-												"					ng-keyup=\""+that.name+".fetchLike('"+name+"')\"\n"+
-												"					ng-model=\""+that.searchTerms+"."+name+"\" >\n"+
-												"			</div>\n"+
-												"		</li>\n"+
-												"	</ul>\n";
+												"<input id=\""+that.name+name+"Search\" \n"+
+                                                "		type=\"text\" \n"+
+                                                "		ng-model=\""+that.searchTerms+"."+name+"\" >\n";
 										}
 										
 										if (metadata.type && metadata.type == 'binary'){
-											heading['content'] =
-												"<a class='dropdown-button' data-activates='"+that.name+name+"SearchUl' id='"+that.name+name+"SearchButton'><i style='position:relative; top:6px;' class=\"material-icons\">keyboard_arrow_down</i></a>\n"+
-												"	<ul id='"+that.name+name+"SearchUl' class='dropdown-content' style='overflow:visible'>\n"+
-												"		<li>\n"+
-												"			<div style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-												"			<select class=\"applyMaterialSelect\" style='width:100px'\n"+
-												"					style='padding:10px;'\n"+
-												"					ng-options=\"option for option in bOptions\"\n"+
-												"					ng-change=\""+that.name+".fetchLike('"+name+"')\"\n"+
-												"					ng-model=\""+that.searchTerms+"."+name+"\">\n"+
-												"			</select>\n"+
-												"			</div>\n"+
-												"		</li>\n"+
-												"		<li>\n"+
-												"			<div class='center-align' style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-												"				<a class=\"waves-effect waves-light btn blue\"\n"+
-												"					ng-click=\""+that.name+".fetchLike('"+name+"',true)\">Fetch All\n"+
-												"				</a>\n"+
-												"			</div>\n"+
-												"		</li>\n"+
-												"	</ul>\n";
+										    heading['content'] =
+                                                "<input\n"+
+                                                "		id=\""+that.name+"search"+name+"\"\n"+
+                                                "		type=\"checkbox\"\n"+
+                                                "		ng-model=\""+that.searchTerms+"."+name+"\">\n"+
+                                                "<label\n"+
+                                                "		class=\"active\"\n"+
+                                                "		for=\""+that.name+"search"+name+"\"></label>\n";
 										}
 									}
 									
@@ -208,25 +212,10 @@
 									
 									if (metadata.searchable){
 										heading['content'] =
-											"<a class='dropdown-button' data-activates='"+that.name+name+"SearchUl' id='"+that.name+name+"SearchButton'><i style='position:relative; top:6px;' class=\"material-icons\">keyboard_arrow_down</i></a>\n"+
-											"	<ul id='"+that.name+name+"SearchUl' class='dropdown-content' style='overflow:visible'>\n"+
-											"		<li>\n"+
-											"			<div style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-											"			<select class=\"applyMaterialSelect\" style='width:100px; padding:10px;'\n"+
-											"				ng-options=\"" + restResource + " as " + entityName + " for " + entitySingle + " in " + entityList + "\"\n"+
-											"				ng-change=\""+that.name+".fetchLike('"+name+"')\"\n"+
-											"				ng-model=\""+that.searchTerms+"."+name+"\">\n"+
-											"			</select>\n"+
-											"			</div>\n"+
-											"		</li>\n"+
-											"		<li>\n"+
-											"			<div class='center-align' style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-											"				<a class=\"waves-effect waves-light btn blue\"\n"+
-											"					ng-click=\""+that.name+".fetchLike('"+name+"',true)\">Fetch All\n"+
-											"				</a>\n"+
-											"			</div>\n"+
-											"		</li>\n"+
-											"	</ul>\n";
+											"<select class=\"applyMaterialSelect\" style='width:100px; padding:10px;'\n"+
+                                            "	ng-options=\"" + restResource + " as " + entityName + " for " + entitySingle + " in " + entityList + "\"\n"+
+                                            "	ng-model=\""+that.searchTerms+"."+name+"\">\n"+
+                                            "</select>\n";
 									}
 									
 									if (metadata.searchable || metadata.editable){
@@ -247,37 +236,29 @@
 									
 									obj['content'] = 
 										"<p ng-bind=\""+that.singularEntity+"."+entityName+"\"></p>\n";
-									
+
+
 									if (metadata.searchable){
+									    var onHoverVar = that.name + "SearchBox" + name;
 										heading['content'] =
-											"<a class='dropdown-button' data-activates='"+that.name+name+"SearchUl' id='"+that.name+name+"SearchButton'><i style='position:relative; top:6px;' class=\"material-icons\">keyboard_arrow_down</i></a>\n"+
-											"	<ul id='"+that.name+name+"SearchUl' class='dropdown-content' style='overflow:visible'>\n"+
-											"		<li>\n"+
-											"			<div style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-											"				<input 	type='text' \n"+
-											"						ng-model=\""+that.searchTerms+"."+name+"."+singleEntity+"Name\"\n"+
-											"						ng-change=\""+that.name+".getSearchSearchableData('"+name+"','"+singleEntity+"Name'"+",'"+metadata.fetch+"')\"\n"+
-											"						autocomplete=\"off\">\n"+
-											"				<ul class=\"collection black-text\"\n"+
-											"						style='max-height:200px;overflow: scroll;\n"+
-											"								position:absolute;z-index: 1000;\n"+
-											"								width:310px;max-width:310px;margin:0px'\n"+
-											"								ng-show=\""+that.headings+"["+(cIndex+1)+"].showSearchedData && "+entityList+" && "+entityList+".length > 0\">\n"+
-											"					<li class=\"collection-item\"\n"+
-											"						ng-repeat=\""+singleEntity+" in "+entityList+"\"\n"+
-											"						ng-bind=\""+entityName+"\"\n"+
-											"						ng-click=\""+that.name+".setSearchSearchableData('"+name+"','"+singleEntity+"Name'"+",'"+metadata.fetch+"',"+singleEntity+")\"></li>\n"+
-											"				</ul>\n"+
-											"			</div>\n"+
-											"		</li>\n"+
-											"		<li>\n"+
-											"			<div class='center-align' style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-											"				<a class=\"waves-effect waves-light btn blue\"\n"+
-											"					ng-click=\""+that.name+".fetchLike('"+name+"',true)\">Fetch All\n"+
-											"				</a>\n"+
-											"			</div>\n"+
-											"		</li>\n"+
-											"	</ul>\n";
+										    "<div ng-mouseover=\""+onHoverVar+"=true;\"\n"+
+										    "       ng-mouseleave=\""+onHoverVar+"=false;\">\n"+
+											"<input type='text' \n"+
+											"       ng-focus=\""+onHoverVar+"=true;\"\n"+
+                                            "		ng-model=\""+that.searchTerms+"."+name+"."+singleEntity+"Name\"\n"+
+                                            "		ng-change=\""+that.name+".getSearchSearchableData('"+name+"','"+singleEntity+"Name'"+",'"+metadata.fetch+"')\"\n"+
+                                            "		autocomplete=\"off\">\n"+
+                                            "<ul class=\"collection black-text\"\n"+
+                                            "	style='max-height:200px;overflow: scroll;\n"+
+                                            "	position:absolute;z-index: 1000;\n"+
+                                            "	width:310px;max-width:310px;margin:0px'\n"+
+                                            "	ng-show=\""+that.headings+"["+(cIndex+1)+"].showSearchedData && "+entityList+" && "+entityList+".length > 0 && "+onHoverVar+"\">\n"+
+                                            "   <li class=\"collection-item\"\n"+
+                                            "	ng-repeat=\""+singleEntity+" in "+entityList+"\"\n"+
+                                            "	ng-bind=\""+entityName+"\"\n"+
+                                            "	ng-click=\""+that.name+".setSearchSearchableData('"+name+"','"+singleEntity+"Name'"+",'"+metadata.fetch+"',"+singleEntity+")\"></li>\n"+
+                                            "</ul>\n"+
+                                            "</div>";
 									}
 									
 									
@@ -310,25 +291,11 @@
 
 									if (metadata.searchable){
 										heading['content'] =
-											"<a class='dropdown-button' data-activates='"+that.name+name+"SearchUl' id='"+that.name+name+"SearchButton'><i style='position:relative; top:6px;' class=\"material-icons\">keyboard_arrow_down</i></a>\n"+
-											"	<ul id='"+that.name+name+"SearchUl' class='dropdown-content' style='overflow:visible'>\n"+
-											"		<li>\n"+
-											"			<div style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-											"			<select class=\"applyMaterialSelect\" style='width:100px; padding:10px;'\n"+
-											"				ng-options=\"" + restResource + " as " + entityName + " for " + entitySingle + " in " + entityList + "\"\n"+
-											"				ng-change=\""+that.name+".fetchLike('"+name+"')\"\n"+
-											"				ng-model=\""+that.searchTerms+"."+name+"\">\n"+
-											"			</select>\n"+
-											"			</div>\n"+
-											"		</li>\n"+
-											"		<li>\n"+
-											"			<div class='center-align' style='padding:5px;border:solid;border-color:#283E4A;'>\n"+
-											"				<a class=\"waves-effect waves-light btn blue\"\n"+
-											"					ng-click=\""+that.name+".fetchLike('"+name+"',true)\">Fetch All\n"+
-											"				</a>\n"+
-											"			</div>\n"+
-											"		</li>\n"+
-											"	</ul>\n";
+											"<select multiple class=\"applyMaterialSelect\" style='width:100px; padding:10px;'\n"+
+                                            "		ng-options=\"" + restResource + " as " + entityName + " for " + entitySingle + " in " + entityList + "\"\n"+
+                                            "		ng-model=\""+that.searchTerms+"."+name+"\">\n"+
+                                            "       <option value='' disabled>Choose "+name+"</option>\n"+
+                                            "</select>\n";
 									}
 									
 									if (!that.$scope[metadata.fetch])
@@ -338,7 +305,22 @@
 							
 						}
 						
-						that.$scope[that.headings].push({name:'Actions'});
+						that.$scope[that.headings].push(
+						    {
+						        name:'Actions',
+						        content:
+						            "<a class=\"waves-effect waves-light btn green\"\n"+
+						            "   style='width:100%;'\n"+
+                                    "	ng-click=\""+that.name+".fetchSearchedData()\">\n"+
+                                    "   Search\n"+
+                                    "</a>\n"+
+                                    "<a class=\"waves-effect waves-light btn green\"\n"+
+                                    "   style='width:100%;'\n"+
+                                    "	ng-click=\""+that.name+".fetchAllData()\">\n"+
+                                    "   Reset\n"+
+                                    "</a>\n"
+                            }
+                        );
 						
 						that.$scope[that.tds].push({name:'action'});
 						var cIndex = that.$scope[that.tds].length - 1;
@@ -346,15 +328,21 @@
 						
 						obj['content'] =
 							"<a class=\"waves-effect waves-light btn blue\"\n"+
+							"   style='width:100%;'\n"+
 							"	ng-click=\""+that.name+".openEditModal("+that.singularEntity+")\">\n"+
-							"	<i class=\"material-icons\">edit</i>\n"+
+							"   Edit\n"+
 							"</a>\n"+
-							"<a class=\"waves-effect waves-light btn blue\"\n"+
+							"<a class=\"waves-effect waves-light btn red\"\n"+
+							"   style='width:100%;'\n"+
 							"	ng-click=\""+that.name+".openDeleteConfirmationModal("+that.singularEntity+")\">\n"+
-							"	<i class=\"material-icons\">delete</i>\n"+
+							"   Delete\n"+
 							"</a>\n";
 						
-						that.$scope[that.headings].unshift({name:"Id"});
+						that.$scope[that.headings].unshift(
+						    {
+						        name:"Id"
+                            }
+                        );  
 						
 						$timeout(function(){
 							$('.dropdown-button').dropdown({
@@ -379,46 +367,92 @@
 						console.log(error);
 					});
 		};
-		
-		apiDataTable.prototype.fetchLike = function(name,fetchAll){
-			var that = this;
-			
-			if (name != null && name != undefined){
-				if (fetchAll){
-					this.$scope[this.searchTerms][name] = null;
-					this
-					    .apiWrapper
-					    .resetSearchParams()
-					    .resetSearchEntity()
-					    .resetPage()
-					    .fetchSortedPage();
-				}else{
-					this
-                        .apiWrapper
-                        .resetSearchParams()
-                        .resetSearchEntity()
-                        .resetPage();
 
-                    var id = null;
-                    if (this.metadata[name].fetch && this.metadata[name].iType == 'dropdown'){
-                        id = this.$scope[this.searchTerms][name];
-                        id = this.getIdFromHref(id);
-                    }else if (this.metadata[name].fetch && this.metadata[name].iType == 'searchable-dropdown'){
-                        id = this.$scope[this.searchTerms][name].href;
-                        id = this.getIdFromHref(id);
-                    }else if (this.metadata[name].fetch && this.metadata[name].iType == 'multiselect-dropdown'){
-                        id = this.$scope[this.searchTerms][name];
-                        id = this.getIdFromHref(id);
-                    }else{
-                        id = this.$scope[this.searchTerms][name];
+		apiDataTable.prototype.fetchSearchedData = function(){
+
+            var searchTerms = this.$scope[this.searchTerms];
+            var metadata = this.metadata;
+            var searchParams = [];
+            for (var prop in searchTerms){
+                var mdata = metadata[prop];
+                if (searchTerms[prop]){
+                    switch(mdata.iType){
+                        case 'input':
+                            var searchParam = {};
+                            if (searchTerms[prop] != ''){
+                                if (mdata.type){
+                                    switch (mdata.type){
+                                        case 'binary':
+                                            searchParam[prop] = searchTerms[prop];
+                                            searchParams.push(searchParam);
+                                            break;
+                                    }
+                                }else{
+                                    searchParam[prop] = searchTerms[prop];
+                                    searchParams.push(searchParam);
+                                }
+                            }
+                            break;
+                        case 'dropdown':
+                            var searchParam = {};
+                            if (searchTerms[prop] != ''){
+                                searchParam[prop] = this.getIdFromHref(searchTerms[prop]);
+                                searchParams.push(searchParam);
+                            }
+                            break;
+                        case 'searchable-dropdown':
+                            var searchParam = {};
+                            if (searchTerms[prop].id){
+                                searchParam[prop] = searchTerms[prop].id;
+                                searchParams.push(searchParam);
+                            }
+                            break;
+                        case 'multiselect-dropdown':
+                            var multipleSelections = searchTerms[prop];
+                            for (var i=0;i<multipleSelections.length;i++){
+                                var searchParam = {};
+                                searchParam[prop] = this.getIdFromHref(multipleSelections[i]);
+                                searchParams.push(searchParam);
+                            }
+                            break;
                     }
-                    this
-                        .apiWrapper
-                        .setSearchParams(name,id)
-                        .fetchSortedPage();
-				}
-			}
-		};
+                }
+            }
+
+            if (searchParams.length > 0){
+                this
+                    .apiWrapper
+                    .resetPage()
+                    .resetSearchParams()
+                    .resetSearchEntity()
+                    .withSearchParams(searchParams)
+                    .fetchSortedPage();
+            }else{
+                 this
+                    .apiWrapper
+                    .resetSearchParams()
+                    .resetSearchEntity()
+                    .resetPage()
+                    .fetchSortedPage();
+            }
+
+		}
+
+		apiDataTable.prototype.fetchAllData = function(){
+		    this
+                .apiWrapper
+                .resetSearchParams()
+                .resetSearchEntity()
+                .resetPage()
+                .fetchSortedPage();
+
+            var searchTerms = this.$scope[this.searchTerms];
+            for (var prop in searchTerms){
+                searchTerms[prop] = null;
+            }
+
+		}
+
 		
 		apiDataTable.prototype.openEditModal = function(entity){
 			
@@ -796,14 +830,13 @@
 				return;
 			}
 			else{
-				var apiSearchable = new apiWrapper(this.$scope);
-				apiSearchable
+				var api = new apiWrapper(this.$scope);
+				api
 				    .configPagination(0,100)
-				    .setSearchEntity(this.getFindByString(searchable))
 				    .setSearchParams(searchable,this.$scope[this.editEntity][prop][searchable])
 				    .setEntityName(entity)
 				    .fetchSortedPage(
-				        function(){
+				        function(response){
 					    for (var i=0;i<that.$scope[that.inputs].length;i++){
 						    if (that.$scope[that.inputs][i].id == prop){
 						    	that.$scope[that.inputs][i].showSearchedData = true;
@@ -872,23 +905,27 @@
 		apiDataTable.prototype.getSearchSearchableData = function(prop,searchable,entity){
 			
 			var that = this;
-			if (!this.$scope[this.searchTerms][prop][searchable]){
-				for (var i=0;i<that.$scope[that.headings].length;i++){
-					if (that.$scope[that.headings][i].id == prop){
-						that.$scope[that.headings][i].showSearchedData = false;
+			var searchText = this.$scope[this.searchTerms][prop][searchable];
+			var searchTerms = this.$scope[this.searchTerms];
+			var headings = this.$scope[that.headings];
+
+			if (!searchText || searchText == ''){
+				for (var i=0;i<headings.length;i++){
+					if (headings[i].id == prop){
+					    searchTerms[prop].id = null;
+						headings[i].showSearchedData = false;
 					}
 				}
 				return;
 			}
 			else{
-				var apiSearchable = new apiWrapper(this.$scope);
-				apiSearchable
+				var api = new apiWrapper(this.$scope);
+				api
 				    .configPagination(0,100)
-				    .setSearchEntity(this.getFindByString(searchable))
 				    .setSearchParams(searchable,this.$scope[this.searchTerms][prop][searchable])
 				    .setEntityName(entity)
 				    .fetchSortedPage(
-				    function(){
+				    function(response){
 					    for (var i=0;i<that.$scope[that.headings].length;i++){
 						    if (that.$scope[that.headings][i].id == prop){
 							    that.$scope[that.headings][i].showSearchedData = true;
@@ -901,57 +938,20 @@
 		apiDataTable.prototype.setSearchSearchableData = function(prop,searchable,entity,obj){
 			
 			var that = this;
+			var searchTerms = this.$scope[this.searchTerms];
+			var headings = this.$scope[this.headings];
 			if (obj){
-				this.$scope[this.searchTerms][prop].href=this.resolveHref(obj,prop,{fetch:entity});
-				this.$scope[this.searchTerms][prop][searchable] = obj[searchable];
-				for (var i=0;i<that.$scope[that.headings].length;i++){
-					if (that.$scope[that.headings][i].id == prop){
-						$timeout(function(){
-							that.$scope[that.headings][i].showSearchedData = false;
-						},500);
-						break;
-					}
-				}
-				this.fetchLike(prop);
+				searchTerms[prop].id = this.getEntityId(obj);
+				searchTerms[prop][searchable] = obj[searchable];
+				for (var i=0;i<headings.length;i++){
+                    if (headings[i].id == prop){
+                        $timeout(function(){
+                            headings[i].showSearchedData = false;
+                        },500);
+                        break;
+                    }
+                }
 				return;
-			}
-			if (!this.$scope[this.editEntity][prop][searchable]){
-				for (var i=0;i<that.$scope[that.headings].length;i++){
-					if (that.$scope[that.headings][i].id == prop){
-						$timeout(function(){
-							that.$scope[that.headings][i].showSearchedData = false;
-						},500);
-						break;
-					}
-				}
-				this.$scope[this.editEntity][prop].href=null;
-				return;
-			}
-			else{
-				if (this.$scope[entity]){
-					var lst = this.$scope[entity];
-					var matchFound = false;
-					for (var i=0;i<lst.length;i++){
-						if (this.$scope[this.editEntity][prop][searchable] == lst[i][searchable]){
-							this.$scope[this.editEntity][prop].href = this.resolveHref(lst[i],prop,{fetch:entity});
-							matchFound = true;
-							break;
-						}
-					}
-					if (!matchFound)
-						this.$scope[this.editEntity][prop].href=null;
-				}else{
-					this.$scope[this.editEntity][prop].href=null;
-				}
-			}
-			
-			for (var i=0;i<that.$scope[that.headings].length;i++){
-				if (that.$scope[that.headings][i].id == prop){
-					$timeout(function(){
-						that.$scope[that.headings][i].showSearchedData = false;
-					},500);
-					break;
-				}
 			}
 		}
 		apiDataTable.prototype.getLabel = function (camelCase) {
@@ -963,22 +963,13 @@
 			      return match.toUpperCase();
 			    });
 		};
-		
-		apiDataTable.prototype.getFindByString = function (str) {
-			  str = 
-				  str
-			    .replace(/^./, function(match) {
-			      return match.toUpperCase();
-			    });
-			  
-			  return "findBy" + str;
-		};
 
         apiDataTable.prototype.resolveHref = function(obj,prop, metadata){
             var href = null;
             if (obj[prop + 'Id']){
                var href =
-                    'http://' +
+                    window.location.protocol +
+                    "//"+
                     window.location.host +
                     '/api/' +
                     metadata.fetch +
@@ -1103,7 +1094,7 @@
 					function(response){
 						that.toast("Updated");
 						$('#' + that.editModal).modal('close');
-						that.apiWrapper.fetchSortedPage(that.entity);
+						that.apiWrapper.fetchSortedPage();
 					},
 					function(error){
 						that.toast(error.statusText);
@@ -1115,7 +1106,21 @@
 			this.$scope[this.editEntity] = angular.copy(this.$scope[this.editEntityCopy]);
 		}
 		apiDataTable.prototype.update = function(){
-			this.apiWrapper.fetchSortedPage(this.entity);
+			this.apiWrapper.fetchSortedPage();
+		}
+
+		apiDataTable.prototype.getWidth = function(index,heading){
+		    var headings = this.$scope[this.headings];
+		    var heading = headings[index];
+
+		    if (index == headings.length - 1)
+		        return '10%';
+            if (index == 0)
+                return '5%';
+            if (heading.metadata.type && heading.metadata.type == 'binary')
+                return '10%';
+
+            return 'auto';
 		}
 		return apiDataTable;
 	}]);
