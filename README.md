@@ -16,6 +16,13 @@ Its an AngularJS library to be used with Spring REST API. This repository also c
 
 5- Open browser and type localhost:5000 with default username : admin and password : 123
 
+### Step By Step Example And Starter Project
+A starter project is present at https://github.com/ArslanAnjum/asaStarter and an example is provided in its Readme for better understanding.</br>
+
+
+
+Below section is purely technical is meant for those who want to either contribute or get in depth understanding of library</br>
+
 ### To Use library
 
 #### Prerequisites
