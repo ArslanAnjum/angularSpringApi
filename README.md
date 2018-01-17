@@ -30,84 +30,16 @@ Its an AngularJS library to be used with Spring REST API. This repository also c
 
 5- Expose Id for all entities. See [CustomRestConfiguration](src/main/java/com/arslan/angularSpringApi/configuration/CustomRestConfiguration.java)
 
-6- Angular Dependencies:
+6- Angular Dependency [angular-bind-html-compile](src/main/resources/static/app/directives/bind-html-compile.js)
 
-    a) angular-bind-html-compile (https://github.com/incuna/angular-bind-html-compile)
-
-With above mentioned prerequisites you can start building CRUD for any entity.
-
-WebContent/views/skeleton.jsp is included in sample project which is used to build CRUD page.
+7- A jsp file which would build the CRUD html page. See [skeleton.jsp](/src/main/webapp/WEB-INF/views/skeleton.jsp)
 
 
-    <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-    
-    
-     
-    <div ng-controller="${entity}Controller"
-         ng-init="init('${_csrf.parameterName}','${_csrf.token}','${_csrf.headerName}','${server}','${entity}')">
-        <div class="wrapper">
-            <div class="container">
-                <div class="section">
-                    <div class="row">
-                        <div class="col s12 m12 l12 center-align">
-                            <h5 class = "viewHeading">${heading}</h5>
-                        </div>
-                    </div>
-                </div>
+Following steps can be taken to generalize CRUDS based on the convention that all cruds would be served at /crud/[entity]; where entity is spring data rest exposed entity name. e.g., for table book spring data rest exposes books.
 
-                <div class="divider"></div>
+1- A Spring Controller with generic structure as [CrudController](/src/main/java/com/arslan/angularSpringApi/module/base/CrudController.java)
 
-                <div class="section">
-                    <div bind-html-compile="${entity}CreateDiv"></div>
-                    <div bind-html-compile="${entity}DataTableDiv"></div>
-                    <div bind-html-compile="${entity}DataTableEditDiv"></div>
-                    <div bind-html-compile="${entity}DeleteConfirmationDiv"></div>
-                    <div bind-html-compile="${entity}DataTablePaginator"></div>
-                </div>
-            </div>
-        </div>
-    </div>
- 
-CrudController present in base package listens for all requests at /crud/{entity} and returns skeleton.jsp with heading and entity model params.
-
-    @Controller
-    @RequestMapping(value="/crud")
-    public class CrudController extends BaseController{
-
-    	@GetMapping(value="/{entity}")
-    	public String getPersonPage(
-            @PathVariable("entity") String entity,
-            Model model
-    	){
-        	model.addAttribute(
-                "heading",
-                entity.substring(0,1).toUpperCase() +
-                        entity.substring(1,entity.length())
-        	);
-
-        	model.addAttribute("entity",entity);
-        	return "skeleton";
-    	}
-	
-    }
-	
-routes.js for angular application would be as follows:
-
-	'use strict';
-	
-	app.config(function ($routeProvider) {
-		$routeProvider
-		.when('/',{
-			templateUrl : 'crud/persons'
-		})
-		.when('/crud/:entity',{
-		    templateUrl : function(param){
-			return 'crud/' + param.entity;
-		    }
-		});
-	});
+2- AngularJS generic router. See [route.js](/src/main/resources/static/app/routes.js)
 
 Each entity collection must have an angular controller with naming convention as [entity name as produced by spring data rest]Controller
 For Example controller for persons would be name personsController.js and would have following structure:
