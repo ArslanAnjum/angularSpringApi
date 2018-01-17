@@ -380,17 +380,8 @@
                         case 'input':
                             var searchParam = {};
                             if (searchTerms[prop] != ''){
-                                if (mdata.type){
-                                    switch (mdata.type){
-                                        case 'binary':
-                                            searchParam[prop] = searchTerms[prop];
-                                            searchParams.push(searchParam);
-                                            break;
-                                    }
-                                }else{
-                                    searchParam[prop] = searchTerms[prop];
-                                    searchParams.push(searchParam);
-                                }
+                                searchParam[prop] = searchTerms[prop];
+                                searchParams.push(searchParam);
                             }
                             break;
                         case 'dropdown':
