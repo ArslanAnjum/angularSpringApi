@@ -1029,6 +1029,8 @@
 		};
 		
 		apiDataTable.prototype.getSingular = function (entity){
+            if (entity === 'movies')
+                return 'movie';
             var iesIndex = entity.lastIndexOf('ies');
             var esIndex = entity.lastIndexOf('es');
             var length = entity.length;
