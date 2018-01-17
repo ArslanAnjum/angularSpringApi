@@ -14,15 +14,15 @@ Its an AngularJS library to be used with Spring REST API. This repository also c
 
 4- Run the scripts present in /sqlScripts/
 
-5- Open browser and type localhost:8080/angularSpringApi/ with default username : admin and password : 123
+5- Open browser and type localhost:5000 with default username : admin and password : 123
 
 ### To Use library
 
 #### Prerequisites
 
-1- Spring Rest API configured at server-root/api/
+1- Spring Rest API base path set to /api/
 
-2- All Entities must have PagindAndSortingRepositories
+2- All Entities must have PaginatedQueryDslRepository [a relative link](src/main/java/com/arslan/angularSpringApi/module/base/PaginatedQueryDslRepository.java)
 
 3- All Entities which have referenced objects must have a projection named 'detail'
 
