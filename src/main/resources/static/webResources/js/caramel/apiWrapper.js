@@ -306,10 +306,12 @@
                 entity,
                 $scope,
                 function(response){
-                    callBack(response,scope);
+                    if (that.isValid(callBack))
+			    callBack(response,scope);
                 },
                 function(response){
-                    errorCallBack(response,scope);
+	            if (that.isValid(errorCallBack))			 
+                           errorCallBack(response,scope);
                 }
                 );
         }
@@ -321,7 +323,8 @@
                 entity,
                 $scope,
                 function(response){
-                    callBack(response,that.$scope);
+                    if (that.isValid(callBack))
+			    callBack(response,that.$scope);
                 },
                 errorCallBack);
         }
@@ -341,7 +344,8 @@
 					that.$scope,
 					function(){
 						that.toast('Deleted');
-						onSuccess(that.$scope);
+						if (that.isValid(onSuccess))
+							onSuccess(that.$scope);
 					},
 					function(){
 						that.toast('Cannot Delete');
