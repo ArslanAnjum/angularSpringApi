@@ -65,7 +65,9 @@
 					var that = this;
 					var headerz = [];
 					headerz['Content-Type'] = 'application/json';
-					headerz[$scope.csrfHeaderName] = $scope.csrfToken;
+					if ($scope.csrfHeaderName && $scope.csrfHeaderName != ''){
+                        headers[$scope.csrfHeaderName] = $scope.csrfToken;
+                    }
 
 					$http.post(url,JSON.stringify(entity),{
                         transformRequest : angular.identity,
@@ -79,7 +81,10 @@
 
 					var headers = [];
 					headers['Content-Type'] = 'application/merge-patch+json';
-					headers[$scope.csrfHeaderName] = $scope.csrfToken;
+					if ($scope.csrfHeaderName && $scope.csrfHeaderName != ''){
+					    headers[$scope.csrfHeaderName] = $scope.csrfToken;
+					}
+
 					
 					$http.patch(
 					    this.getSelfLink(entity),
@@ -96,7 +101,9 @@
 					
 					var url = this.getSelfLink(object)
 					var headers = [];
-					headers[$scope.csrfHeaderName] = $scope.csrfToken;
+					if ($scope.csrfHeaderName && $scope.csrfHeaderName != ''){
+                        headers[$scope.csrfHeaderName] = $scope.csrfToken;
+                    }
 					
 					$http.delete(
 					    this.getSelfLink(object),
