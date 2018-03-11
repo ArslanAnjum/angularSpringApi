@@ -63,15 +63,15 @@
 				this.create = function(entityName,entity,$scope,onSuccess,onError){
 					var url= baseUrl + entityName;
 					var that = this;
-					var headerz = [];
-					headerz['Content-Type'] = 'application/json';
+					var headers = [];
+					headers['Content-Type'] = 'application/json';
 					if ($scope.csrfHeaderName && $scope.csrfHeaderName != ''){
                         headers[$scope.csrfHeaderName] = $scope.csrfToken;
                     }
 
 					$http.post(url,JSON.stringify(entity),{
                         transformRequest : angular.identity,
-                        headers : headerz
+                        headers : headers
                     })
                     .then(onSuccess,onError);
 
