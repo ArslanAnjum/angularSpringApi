@@ -22,6 +22,7 @@
 		var hasNext;
 		var hasPrevious;
 		var doNotUseProjection;
+		var selectId;
 
 		/*
 		    Passive api means:
@@ -41,6 +42,7 @@
 			this.$scope = $scope;
 			this.projection = 'detail';
 			this.searchParams = [];
+			this.selectId = 'select';
 		}
 
 		apiWrapper.prototype.configPagination = function(page,size,sort,order){
@@ -129,9 +131,13 @@
 			this.entityName = entityName;
 			return this;
 		}
+		apiWrapper.prototype.setSelectId = function(selectId){
+			this.selectId = selectId;
+			return this;
+		}
 		apiWrapper.prototype.applyMaterialSelect = function(){
 			$timeout(function(){
-				$('select').material_select();
+				$(this.selectId).material_select();
 			},500);
 		}
 		apiWrapper.prototype.applyInitDatePicker = function(){
