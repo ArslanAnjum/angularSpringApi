@@ -136,9 +136,9 @@
 			return this;
 		}
 		apiWrapper.prototype.applyMaterialSelect = function(){
-			$timeout(function(){
+			$timeout(angular.bind(this,function(){
 				$(this.selectId).material_select();
-			},500);
+			}),500);
 		}
 		apiWrapper.prototype.applyInitDatePicker = function(){
 			var that = this;
