@@ -42,7 +42,7 @@
 		var searchParams;
 		var variableName;
 		
-		var apiWrapper = functison($scope){
+		var apiWrapper = function($scope){
 			this.$scope = $scope;
 			this.projection = 'detail';
 			this.searchParams = [];
