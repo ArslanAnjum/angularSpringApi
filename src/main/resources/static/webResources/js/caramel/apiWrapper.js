@@ -26,11 +26,15 @@
 
 		/*
 		    Passive api means:
-		        1- None Found wont be toasted
 		        2- Received Data wont be set on a $scope variable
 		*/
 		var isItAPassiveApi;
-
+		
+		/*
+			SuppressToast
+			*/
+		var suppressedToast;
+		
         var resetOnNoneFound;
 
 		var entityName;
@@ -38,7 +42,7 @@
 		var searchParams;
 		var variableName;
 		
-		var apiWrapper = function($scope){
+		var apiWrapper = functison($scope){
 			this.$scope = $scope;
 			this.projection = 'detail';
 			this.searchParams = [];
@@ -85,6 +89,12 @@
 		    this.isItAPassiveApi = true;
 		    return this;
 		}
+		
+		apiWrapper.prototype.suppressToast = function(){
+			this.suppressedToast  = true;
+			return this;
+		}
+		
 		apiWrapper.prototype.withResetOnNoneFound = function(){
 		    this.resetOnNoneFound = true;
 		    return this;
@@ -222,7 +232,6 @@
                    var noneFound = false;
                    if (!that.isValid(response._embedded[that.entityName])){
                        if (!that.isItAPassiveApi){
-                            that.toast("None Found");
                             if (that.resetOnNoneFound){
                                 if (that.isValid(that.variableName))
                                     that.$scope[that.variableName] = [];
@@ -230,6 +239,10 @@
                                     that.$scope[that.entityName] = [];
                             }
                         }
+			if (!that.suppressedToast){
+			    that.toast("None Found");
+			}
+			   
                        noneFound = true;
                    }else{
                        if (!that.isItAPassiveApi){
