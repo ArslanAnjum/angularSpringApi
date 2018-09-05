@@ -35,6 +35,9 @@
 			*/
 		var suppressedToast;
 		
+		var onSuccessfullSubsequentFetch;
+		var fetched;
+		
         var resetOnNoneFound;
 
 		var entityName;
@@ -47,6 +50,7 @@
 			this.projection = 'detail';
 			this.searchParams = [];
 			this.selectId = 'select';
+			this.fetched = 0;
 		}
 
 		apiWrapper.prototype.configPagination = function(page,size,sort,order){
@@ -145,6 +149,9 @@
 			this.selectId = selectId;
 			return this;
 		}
+		apiWrapper.prototype.setOnSuccessfullSubsequentFetch = function(onSuccessfullSubsequentFetch){
+			this.onSuccessfullSubsequentFetch = onSuccessfullSubsequentFetch;
+		}
 		apiWrapper.prototype.applyMaterialSelect = function(){
 			$timeout(angular.bind(this,function(){
 				$(this.selectId).material_select();
@@ -204,7 +211,7 @@
 		        projection
 		        search arguments -> set using setSearchParams
 		*/
-		apiWrapper.prototype.fetchSortedPage = function(onSuccess,onNoneFound,onError){
+		apiWrapper.prototype.fetchSortedPage = function(onSuccess,onNoneFound,onError,internalCall){
 			var that=this;
 
 			var args = [];
@@ -266,7 +273,10 @@
                         if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope,that);
                    }else{
                         if (that.isValid(onSuccess)) onSuccess(response,that.$scope,that);
-                   }
+		   	
+		   	if (that.isValid(onSuccessfullFetch) && that.fetched > 0) onSuccessfullSubsequentFetch(response, that.$scope, that);
+                   	that.fetched++;
+		   }
                },
                function(error){
                    if (!that.isItAPassiveApi){
