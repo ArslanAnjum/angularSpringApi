@@ -151,6 +151,7 @@
 		}
 		apiWrapper.prototype.setOnSuccessfullSubsequentFetch = function(onSuccessfullSubsequentFetch){
 			this.onSuccessfullSubsequentFetch = onSuccessfullSubsequentFetch;
+			return this;
 		}
 		apiWrapper.prototype.applyMaterialSelect = function(){
 			$timeout(angular.bind(this,function(){
