@@ -275,7 +275,7 @@
                    }else{
                         if (that.isValid(onSuccess)) onSuccess(response,that.$scope,that);
 		   	
-		   	if (that.isValid(onSuccessfullFetch) && that.fetched > 0) onSuccessfullSubsequentFetch(response, that.$scope, that);
+		   	if (that.isValid(onSuccessfullSubsequentFetch) && that.fetched > 0) onSuccessfullSubsequentFetch(response, that.$scope, that);
                    	that.fetched++;
 		   }
                },
