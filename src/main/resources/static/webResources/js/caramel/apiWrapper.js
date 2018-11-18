@@ -103,7 +103,7 @@
 			return this;
 		}
 
-		apiWrapper.prototype.loadMoreMode = function(){
+		apiWrapper.prototype.withLoadMoreMode = function(){
 		    this.loadMoreMode = true;
 		    return this;
 		}
