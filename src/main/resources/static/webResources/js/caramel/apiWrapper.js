@@ -5,13 +5,13 @@
 	/**
 	 * @author Arslan Anjum
 	 */
-	
+
 	var apiWrapperModule = angular.module('apiWrapper',[]);
-	
+
 	apiWrapperModule.service('apiWrapper',['$http','api','$timeout','$q',function($http,api,$timeout,$q){
-		
+
 		var projection;
-		
+
 		var $scope;
 		var page
 		var size
@@ -29,28 +29,32 @@
 		        2- Received Data wont be set on a $scope variable
 		*/
 		var isItAPassiveApi;
-		
+
 		/*
 			SuppressToast
 			*/
 		var suppressedToast;
-		
+
 		var onSuccessfullSubsequentFetch;
 		var fetched;
-		
+
         var resetOnNoneFound;
 
 		var entityName;
 		var searchEntity;
 		var searchParams;
 		var variableName;
-		
+		var loadMoreMode;
+		var loadingMore;
+
 		var apiWrapper = function($scope){
 			this.$scope = $scope;
 			this.projection = 'detail';
 			this.searchParams = [];
 			this.selectId = 'select';
 			this.fetched = 0;
+			this.loadMoreMode = false;
+			this.loadingMore = false;
 		}
 
 		apiWrapper.prototype.configPagination = function(page,size,sort,order){
@@ -93,12 +97,17 @@
 		    this.isItAPassiveApi = true;
 		    return this;
 		}
-		
+
 		apiWrapper.prototype.suppressToast = function(){
 			this.suppressedToast  = true;
 			return this;
 		}
-		
+
+		apiWrapper.prototype.loadMoreMode = function(){
+		    this.loadMoreMode = true;
+		    return this;
+		}
+
 		apiWrapper.prototype.withResetOnNoneFound = function(){
 		    this.resetOnNoneFound = true;
 		    return this;
@@ -173,13 +182,13 @@
 			Materialize.toast(msg, 2500,'blue rounded');
 		}
 		apiWrapper.prototype.isValid = function(argument){
-			if (	argument === undefined || 
+			if (	argument === undefined ||
 					argument === null ||
 					argument === '' ||
 					argument.length === 0){
 				return false;
 			}
-			else 
+			else
 				return true;
 		}
 
@@ -247,17 +256,32 @@
                                     that.$scope[that.entityName] = [];
                             }
                         }
-			if (!that.suppressedToast){
-			    that.toast("None Found");
-			}
-			   
+
+                        if (!that.suppressedToast){
+                            that.toast("None Found");
+                        }
+
                        noneFound = true;
+
                    }else{
                        if (!that.isItAPassiveApi){
-                           if (that.isValid(that.variableName))
-                                that.$scope[that.variableName] = response._embedded[that.entityName];
-                           else
-                                that.$scope[that.entityName] = response._embedded[that.entityName];
+                           if (that.isValid(that.variableName)){
+                                if (that.loadMoreMode && that.page > 0){
+                                    that.$scope[that.variableName].push(...response._embedded[that.entityName]);
+
+                                } else {
+                                    that.$scope[that.variableName] = response._embedded[that.entityName];
+                                }
+                           }
+                           else {
+                                if (that.loadMoreMode && that.page > 0){
+                                    that.$scope[that.entityName].push(...response._embedded[that.entityName]);
+
+                                } else {
+                                    that.$scope[that.entityName] = response._embedded[that.entityName];
+                                }
+
+                           }
                        }
                    }
 
@@ -274,10 +298,12 @@
                         if (that.isValid(onNoneFound)) onNoneFound(response,that.$scope,that);
                    }else{
                         if (that.isValid(onSuccess)) onSuccess(response,that.$scope,that);
-		   	
-		   	if (that.isValid(that.onSuccessfullSubsequentFetch) && that.fetched > 0) that.onSuccessfullSubsequentFetch(response, that.$scope, that);
-                   	that.fetched++;
-		   }
+
+                    if (that.isValid(that.onSuccessfullSubsequentFetch) && that.fetched > 0) that.onSuccessfullSubsequentFetch(response, that.$scope, that);
+                            that.fetched++;
+                   }
+
+                   that.loadingMore = false;
                },
                function(error){
                    if (!that.isItAPassiveApi){
@@ -289,6 +315,8 @@
                        that.applyInitDatePicker();
                    }
                    if (that.isValid(onError)) onError(error,$scope,that);
+
+                   that.loadingMore = false;
                }
             );
 		}
@@ -315,6 +343,18 @@
 			this.page = this.totalPages - 1;
 			this.fetchSortedPage();
 		}
+
+		apiWrapper.prototype.loadMore = function(){
+		    if (!this.loadingMore){
+		        this.loadingMore = true;
+		    } else {
+		        return;
+		    }
+            if (this.page + 1 < this.totalPages){
+                this.page = this.page + 1;
+                this.fetchSortedPage();
+            }
+        }
         /*************************************/
 
 		apiWrapper.prototype.getProfile = function(onSuccess,onError){
@@ -340,7 +380,7 @@
 			    callBack(response,scope);
                 },
                 function(response){
-	            if (that.isValid(errorCallBack))			 
+	            if (that.isValid(errorCallBack))
                            errorCallBack(response,scope);
                 }
                 );
@@ -360,15 +400,15 @@
         }
 
 		apiWrapper.prototype.delete = function(object,onSuccess,onError){
-			
+
 			var that = this;
-			
+
 			if (!this.isValid(object)){
 				this.toast('Invalid');
 				return;
 			}
-			
-			
+
+
 			api.delete(
 					object,
 					that.$scope,
@@ -400,3 +440,4 @@
 		return apiWrapper;
 }]);
 }(window.angular));
+
