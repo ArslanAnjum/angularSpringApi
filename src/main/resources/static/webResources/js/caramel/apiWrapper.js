@@ -267,7 +267,16 @@
                        if (!that.isItAPassiveApi){
                            if (that.isValid(that.variableName)){
                                 if (that.loadMoreMode && that.page > 0){
-                                    that.$scope[that.variableName].push(...response._embedded[that.entityName]);
+                                    let lst = that.$scope[that.variableName];
+                                    let lastId = lst[lst.length - 1][that.sort];
+
+                                    let receivedLst = response._embedded[that.entityName];
+
+                                    for (let i=0; i<receivedLst.length; i++){
+                                        if (receivedLst[i][that.sort] < lastId){
+                                            lst.push(receivedLst[i]);
+                                        }
+                                    }
 
                                 } else {
                                     that.$scope[that.variableName] = response._embedded[that.entityName];
@@ -275,8 +284,16 @@
                            }
                            else {
                                 if (that.loadMoreMode && that.page > 0){
-                                    that.$scope[that.entityName].push(...response._embedded[that.entityName]);
+                                    let lst = that.$scope[that.entityName];
+                                    let lastId = lst[lst.length - 1][that.sort];
 
+                                    let receivedLst = response._embedded[that.entityName];
+
+                                    for (let i=0; i<receivedLst.length; i++){
+                                        if (receivedLst[i][that.sort] < lastId){
+                                            lst.push(receivedLst[i]);
+                                        }
+                                    }
                                 } else {
                                     that.$scope[that.entityName] = response._embedded[that.entityName];
                                 }
@@ -354,6 +371,25 @@
                 this.page = this.page + 1;
                 this.fetchSortedPage();
             }
+        }
+
+        apiWrapper.prototype.updateWithId = function(id){
+
+            var that = this;
+            $http
+            .get('/api/' + that.entityName + '/' + id + '?projection=' + that.projection)
+            .then (
+                function(response){
+                    let newObj = response.data;
+                    let $scope = that.$scope;
+                    let lst = that.variableName ? $scope[that.variableName] : $scope[that.entityName];
+                    lst.unshift(newObj);
+
+                    if (lst.length % that.size == 1 && that.page > 0){
+                        that.totalPages++;
+                    }
+                }
+            )
         }
         /*************************************/
 
