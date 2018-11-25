@@ -375,7 +375,7 @@
             }
         }
 
-        apiWrapper.prototype.updateWithId = function(id){
+        apiWrapper.prototype.updateListWithId = function(id){
 
             var that = this;
             $http
@@ -394,8 +394,27 @@
             )
         }
 
+        apiWrapper.prototype.updateListWithIdAtEnd = function(id){
 
-        apiWrapper.prototype.updateWithObj = function(newObj){
+            var that = this;
+            $http
+            .get('/api/' + that.entityName + '/' + id + '?projection=' + that.projection)
+            .then (
+                function(response){
+                    let newObj = response.data;
+                    let $scope = that.$scope;
+                    let lst = that.variableName ? $scope[that.variableName] : $scope[that.entityName];
+                    lst.push(newObj);
+
+                    if (lst.length % that.size == 1 && that.page > 0){
+                        that.totalPages++;
+                    }
+                }
+            )
+        }
+
+
+        apiWrapper.prototype.updateListWithObj = function(newObj){
 
             var that = this;
             let $scope = that.$scope;
@@ -430,6 +449,56 @@
 
                         })
                     )
+                }
+            }
+        }
+
+
+        apiWrapper.prototype.addActive = function(id){
+            var that = this;
+            let $scope = that.$scope;
+            let lst = that.variableName ? $scope[that.variableName] : $scope[that.entityName];
+            let key = that.getSingular(that.entityName) + "Id";
+
+            if (lst.length > 0){
+                let max = lst[0][key];
+                let min = lst[lst.length - 1][key];
+
+                if (id > max){
+                    that.updateListWithId(id);
+                } else if (id < min){
+                    if (lst.length % that.size == 0){
+                        that.totalPages++;
+                    } else {
+                        that.updateListWithIdAtEnd(id);
+                    }
+                } else {
+                    that.updateIndividualById(id);
+                }
+            }
+        }
+
+        apiWrapper.prototype.removeInactive = function(id){
+
+            var that = this;
+            let $scope = that.$scope;
+            let lst = that.variableName ? $scope[that.variableName] : $scope[that.entityName];
+            let key = that.getSingular(that.entityName) + "Id";
+
+            if (lst.length > 0){
+                let max = lst[0][key];
+                let min = lst[lst.length - 1][key];
+
+                for (let i=0; i<lst.length; i++){
+                    if (lst[i][key] == id){
+                        lst.splice(i,1);
+                        if (lst.length % that.size == 0){
+                            if (that.page > 0){
+                                that.page--;
+                            }
+                        }
+                        break;
+                    }
                 }
             }
         }
