@@ -391,6 +391,20 @@
                 }
             )
         }
+
+
+        apiWrapper.prototype.updateWithObj = function(newObj){
+
+            var that = this;
+            let $scope = that.$scope;
+            let lst = that.variableName ? $scope[that.variableName] : $scope[that.entityName];
+            lst.unshift(newObj);
+
+            if (lst.length % that.size == 1 && that.page > 0){
+                that.totalPages++;
+            }
+        }
+
         /*************************************/
 
 		apiWrapper.prototype.getProfile = function(onSuccess,onError){
