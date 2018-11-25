@@ -268,12 +268,13 @@
                            if (that.isValid(that.variableName)){
                                 if (that.loadMoreMode && that.page > 0){
                                     let lst = that.$scope[that.variableName];
-                                    let lastId = lst[lst.length - 1][that.sort];
+                                    let key = that.getSingular(that.entityName) + "Id";
+                                    let lastId = lst[lst.length - 1][key];
 
                                     let receivedLst = response._embedded[that.entityName];
 
                                     for (let i=0; i<receivedLst.length; i++){
-                                        if (receivedLst[i][that.sort] < lastId){
+                                        if (receivedLst[i][key] < lastId){
                                             lst.push(receivedLst[i]);
                                         }
                                     }
@@ -285,12 +286,13 @@
                            else {
                                 if (that.loadMoreMode && that.page > 0){
                                     let lst = that.$scope[that.entityName];
-                                    let lastId = lst[lst.length - 1][that.sort];
+                                    let key = that.getSingular(that.entityName) + "Id";
+                                    let lastId = lst[lst.length - 1][key];
 
                                     let receivedLst = response._embedded[that.entityName];
 
                                     for (let i=0; i<receivedLst.length; i++){
-                                        if (receivedLst[i][that.sort] < lastId){
+                                        if (receivedLst[i][key] < lastId){
                                             lst.push(receivedLst[i]);
                                         }
                                     }
@@ -402,6 +404,33 @@
 
             if (lst.length % that.size == 1 && that.page > 0){
                 that.totalPages++;
+            }
+        }
+
+        apiWrapper.prototype.updateIndividualById = function(id){
+
+            var that = this;
+            let $scope = that.$scope;
+            let lst = that.variableName ? $scope[that.variableName] : $scope[that.entityName];
+            let key = that.getSingular(that.entityName) + "Id";
+
+            for (let i=0; i<lst.length; i++){
+                if (lst[i][key] == id){
+
+                    $http
+                    .get('/api/' + that.entityName + '/' + id + '?projection=' + that.projection)
+                    .then(
+                        angular.bind(id, function(response){
+
+                            for (let j=0; j<lst.length; j++){
+                                if (lst[j][key] == this){
+                                    lst[j] = angular.copy(response.data);
+                                }
+                            }
+
+                        })
+                    )
+                }
             }
         }
 
