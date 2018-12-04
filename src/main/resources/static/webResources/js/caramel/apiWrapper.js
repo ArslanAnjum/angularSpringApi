@@ -41,6 +41,7 @@
         var resetOnNoneFound;
 
 		var entityName;
+		var collectionName;     //if collection name is something other than entity Name . e.g., api is at logs but would return list of places.
 		var searchEntity;
 		var searchParams;
 		var variableName;
@@ -154,6 +155,10 @@
 			this.entityName = entityName;
 			return this;
 		}
+		apiWrapper.prototype.setCollectionName = function(collectionName){
+		    this.collectionName = collectionName;
+		    return this;
+		}
 		apiWrapper.prototype.setSelectId = function(selectId){
 			this.selectId = selectId;
 			return this;
@@ -246,8 +251,10 @@
                 that.$scope,
                 function(response){
                    response = response.data;
+                   var collectionName = that.collectionName == undefined ? that.entityName : that.collectionName;
+
                    var noneFound = false;
-                   if (!that.isValid(response._embedded[that.entityName])){
+                   if (!that.isValid(response._embedded[collectionName])){
                        if (!that.isItAPassiveApi){
                             if (that.resetOnNoneFound){
                                 if (that.isValid(that.variableName))
@@ -268,10 +275,10 @@
                            if (that.isValid(that.variableName)){
                                 if (that.loadMoreMode && that.page > 0){
                                     let lst = that.$scope[that.variableName];
-                                    let key = that.getSingular(that.entityName) + "Id";
+                                    let key = that.getSingular(collectionName) + "Id";
                                     let lastId = lst[lst.length - 1][key];
 
-                                    let receivedLst = response._embedded[that.entityName];
+                                    let receivedLst = response._embedded[collectionName];
 
                                     for (let i=0; i<receivedLst.length; i++){
                                         if (receivedLst[i][key] < lastId){
@@ -280,16 +287,16 @@
                                     }
 
                                 } else {
-                                    that.$scope[that.variableName] = response._embedded[that.entityName];
+                                    that.$scope[that.variableName] = response._embedded[collectionName];
                                 }
                            }
                            else {
                                 if (that.loadMoreMode && that.page > 0){
                                     let lst = that.$scope[that.entityName];
-                                    let key = that.getSingular(that.entityName) + "Id";
+                                    let key = that.getSingular(collectionName) + "Id";
                                     let lastId = lst[lst.length - 1][key];
 
-                                    let receivedLst = response._embedded[that.entityName];
+                                    let receivedLst = response._embedded[collectionName];
 
                                     for (let i=0; i<receivedLst.length; i++){
                                         if (receivedLst[i][key] < lastId){
@@ -297,7 +304,7 @@
                                         }
                                     }
                                 } else {
-                                    that.$scope[that.entityName] = response._embedded[that.entityName];
+                                    that.$scope[that.entityName] = response._embedded[collectionName];
                                 }
 
                            }
