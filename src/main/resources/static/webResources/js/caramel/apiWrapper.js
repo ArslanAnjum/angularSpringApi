@@ -274,35 +274,51 @@
                        if (!that.isItAPassiveApi){
                            if (that.isValid(that.variableName)){
                                 if (that.loadMoreMode && that.page > 0){
-                                    let lst = that.$scope[that.variableName];
-                                    let key = that.getSingular(collectionName) + "Id";
-                                    let lastId = lst[lst.length - 1][key];
+                                    if (that.isValid(that.sort)){
+                                        let lst = that.$scope[that.variableName];
+                                        let key = that.getSingular(collectionName) + "Id";
+                                        let lastId = lst[lst.length - 1][key];
 
-                                    let receivedLst = response._embedded[collectionName];
+                                        let receivedLst = response._embedded[collectionName];
 
-                                    for (let i=0; i<receivedLst.length; i++){
-                                        if (receivedLst[i][key] < lastId){
+                                        for (let i=0; i<receivedLst.length; i++){
+                                            if (receivedLst[i][key] < lastId){
+                                                lst.push(receivedLst[i]);
+                                            }
+                                        }
+                                    } else {
+                                        let receivedLst = response._embedded[collectionName];
+                                        for (let i=0; i<receivedLst.length; i++){
                                             lst.push(receivedLst[i]);
                                         }
                                     }
-
                                 } else {
                                     that.$scope[that.variableName] = response._embedded[collectionName];
                                 }
                            }
                            else {
                                 if (that.loadMoreMode && that.page > 0){
-                                    let lst = that.$scope[that.entityName];
-                                    let key = that.getSingular(collectionName) + "Id";
-                                    let lastId = lst[lst.length - 1][key];
+                                    if (that.isValid(that.sort)){
+                                        let lst = that.$scope[that.entityName];
+                                        let key = that.getSingular(collectionName) + "Id";
+                                        let lastId = lst[lst.length - 1][key];
 
-                                    let receivedLst = response._embedded[collectionName];
+                                        let receivedLst = response._embedded[collectionName];
 
-                                    for (let i=0; i<receivedLst.length; i++){
-                                        if (receivedLst[i][key] < lastId){
+                                        for (let i=0; i<receivedLst.length; i++){
+                                            if (receivedLst[i][key] < lastId){
+                                                lst.push(receivedLst[i]);
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        let receivedLst = response._embedded[collectionName];
+
+                                        for (let i=0; i<receivedLst.length; i++){
                                             lst.push(receivedLst[i]);
                                         }
                                     }
+
                                 } else {
                                     that.$scope[that.entityName] = response._embedded[collectionName];
                                 }
