@@ -287,6 +287,7 @@
                                             }
                                         }
                                     } else {
+                                        let lst = that.$scope[that.variableName];
                                         let receivedLst = response._embedded[collectionName];
                                         for (let i=0; i<receivedLst.length; i++){
                                             lst.push(receivedLst[i]);
@@ -312,8 +313,8 @@
                                         }
                                     }
                                     else {
+                                        let lst = that.$scope[that.entityName];
                                         let receivedLst = response._embedded[collectionName];
-
                                         for (let i=0; i<receivedLst.length; i++){
                                             lst.push(receivedLst[i]);
                                         }
